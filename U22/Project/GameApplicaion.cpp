@@ -46,6 +46,10 @@ bool u22::GameApplication::Update(void) {
 			//ƒQ[ƒ€
 		case SCENENO_GAME:
 			pScene = new CGame();
+			break;
+		case SCENENO_END:
+			PostQuitMessage(0);
+			break;
 		}
 		pScene->SetNo(stageno);
 		pScene->Initialize();
@@ -55,7 +59,7 @@ bool u22::GameApplication::Update(void) {
 
 bool u22::GameApplication::Render(void) {
     g_pGraphics->RenderStart();
-    g_pGraphics->ClearTarget(color::rgba::kBlue, 1.0f, 1.0f);
+    g_pGraphics->ClearTarget(color::rgba::kBlack, 1.0f, 1.0f);
 
 	//ƒV[ƒ“•`‰æ
 	pScene->Render(&_camera);
