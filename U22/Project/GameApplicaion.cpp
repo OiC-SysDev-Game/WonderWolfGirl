@@ -48,8 +48,8 @@ bool u22::GameApplication::Update(void) {
 			pScene = new CGame();
 			break;
 		case SCENENO_END:
-			PostQuitMessage(0);
-			break;
+			::PostQuitMessage(0);
+			return true;
 		}
 		pScene->SetNo(stageno);
 		pScene->Initialize();
