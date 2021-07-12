@@ -48,8 +48,9 @@ bool u22::GameApplication::Update(void) {
 			pScene = new CGame();
 			break;
 		case SCENENO_END:
-			::PostQuitMessage(0);
-			return true;
+			//PostQuitMessage(0)が正常に動作しないため、仮でタイトルに
+			pScene = new CTitle();
+			break;
 		}
 		pScene->SetNo(stageno);
 		pScene->Initialize();
