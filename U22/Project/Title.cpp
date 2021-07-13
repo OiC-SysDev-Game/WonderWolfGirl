@@ -101,8 +101,7 @@ void CTitle::Update() {
 				break;
 
 			case POP_END:
-				bEnd = true;
-				NextScene = SCENENO_END;
+				::PostQuitMessage(0);
 				break;
 
 			default:
@@ -146,7 +145,6 @@ void CTitle::Render(CCamera* _camera) {
 			T_Pop[i].Render(PP, PC, *_camera);
 		}
 	}
-	
 }
 
 void CTitle::RenderDebug(CCamera* _camera) {

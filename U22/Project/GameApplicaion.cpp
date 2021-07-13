@@ -23,6 +23,10 @@ bool u22::GameApplication::Initialize(void) {
 }
 
 bool u22::GameApplication::Update(void) {
+	if (g_pInput->IsPush(Keycode::Escape))
+	{
+		::PostQuitMessage(0);
+	}
 	//シーンの更新
 	pScene->Update();
 	//シーンチェンジ
