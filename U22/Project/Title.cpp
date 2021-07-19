@@ -25,6 +25,7 @@ CTitle::~CTitle()
 
 bool CTitle::Load() {
 	return true;
+	//BBB
 }
 
 void CTitle::Initialize() {

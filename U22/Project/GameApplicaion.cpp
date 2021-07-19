@@ -9,6 +9,7 @@ CSceneBase* pScene = NULL;
 CCamera _camera;
 
 u22::GameApplication::GameApplication() {
+
 }
 
 u22::GameApplication::~GameApplication() {
