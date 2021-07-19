@@ -24,3 +24,9 @@ void CStage::RenderDebug(CCamera* _camera) {
 
 void CStage::Release() {
 }
+
+#pragma region ÉMÉ~ÉbÉN
+
+
+
+#pragma endregion
