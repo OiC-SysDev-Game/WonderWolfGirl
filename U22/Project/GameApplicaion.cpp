@@ -3,6 +3,7 @@
 #include "Title.h"
 #include "StageSelect.h"
 #include "Game.h"
+#include "Option.h"
 
 CSceneBase* pScene = NULL;
 CCamera _camera;
@@ -34,6 +35,7 @@ bool u22::GameApplication::Update(void) {
 	{
 		//次のシーンを取得
 		int change = pScene->GetNextScene();
+		int bscene = pScene->GetBeforeScene();
 		int stageno = pScene->GetNo();
 		//古いシーンを消去
 		delete pScene;
@@ -51,11 +53,12 @@ bool u22::GameApplication::Update(void) {
 		case SCENENO_GAME:
 			pScene = new CGame();
 			break;
-		case SCENENO_END:
-			//PostQuitMessage(0)が正常に動作しないため、仮でタイトルに
-			pScene = new CTitle();
+			//オプション
+		case SCENENO_OPTION:
+			pScene = new COption();
 			break;
 		}
+		pScene->SetBeforeScene(bscene);
 		pScene->SetNo(stageno);
 		pScene->Initialize();
 	}

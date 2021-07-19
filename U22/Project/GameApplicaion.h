@@ -8,7 +8,7 @@ enum tag_SCENENO {								//ë∂ç›Ç∑ÇÈÉVÅ[Éì
     SCENENO_TITLE,
     SCENENO_STAGESELECT,
     SCENENO_GAME,
-    SCENENO_END,
+    SCENENO_OPTION,
 };
 
 namespace u22 {

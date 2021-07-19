@@ -27,15 +27,15 @@ private:
 	};
 	//メニューポップ名(非選択時)
 	const char* T_PopNames[TITLE_MENUCOUNT] = {
-	"Image/SELECT.png",
-	"Image/OPTION.png",
-	"Image/END.png",
+	"Image/Title/SELECT.png",
+	"Image/Title/OPTION.png",
+	"Image/Title/END.png",
 	};
 	//メニューポップ名(選択時/通常)
 	const char* T_PopSelectNames[TITLE_MENUCOUNT] = {
-	"Image/SELECT_Select.png",
-	"Image/OPTION_Select.png",
-	"Image/END_Select.png"
+	"Image/Title/SELECT_Select.png",
+	"Image/Title/OPTION_Select.png",
+	"Image/Title/END_Select.png"
 	};
 
 	CSoundBuffer		T_BackGroundBGM;					//メニュ―画面のBGM
@@ -62,7 +62,8 @@ private:
 	bool FeedInEndCheck();
 	void FeedOut();
 	bool FeedOutEndCheck();
-	void GamePadControl();
+	void MouseControl();
+	float MaxOrMinAdjust(float value, float IorDvalue, float max, float min);
 
 public:
 	CTitle();

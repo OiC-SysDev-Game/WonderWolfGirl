@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClCompile Include="CEnemy.cpp" />
     <ClCompile Include="CGame.cpp" />
+    <ClCompile Include="COption.cpp" />
     <ClCompile Include="CStage.cpp" />
     <ClCompile Include="CStageObject.cpp" />
     <ClCompile Include="CWolf.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameApplicaion.h" />
     <ClInclude Include="Girl.h" />
+    <ClInclude Include="Option.h" />
     <ClInclude Include="SceneBase.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StageObject.h" />

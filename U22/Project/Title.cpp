@@ -38,9 +38,9 @@ void CTitle::Initialize() {
 	T_BackGroundBGM.Play();
 
 	//背景
-	T_BackImage.Load("Image/BackImage.png");
+	T_BackImage.Load("Image/Title/BackImage.png");
 	//タイトル
-	T_Title.Load("Image/Title.png");
+	T_Title.Load("Image/Title/Title.png");
 
 	//ポップイラスト
 	for (int i = 0; i < TITLE_MENUCOUNT; i++)
@@ -80,8 +80,8 @@ void CTitle::Update() {
 		break;
 	case PHASE_UNDER:
 		//操作中処理
-		//ゲームパッド操作
-		GamePadControl();
+		//マウス操作
+		MouseControl();
 		break;
 	case PHASE_NEXT:
 		//次の画面への処理
@@ -91,13 +91,15 @@ void CTitle::Update() {
 			switch (T_MenuSelectNo)
 			{
 			case POP_SELECT:
+				T_BackGroundBGM.Stop();
 				bEnd = true;
 				NextScene = SCENENO_STAGESELECT;
 				break;
 
 			case POP_OPTION:
 				bEnd = true;
-				NextScene = SCENENO_STAGESELECT;
+				BeforeScene = SCENENO_TITLE;
+				NextScene = SCENENO_OPTION;
 				break;
 
 			case POP_END:
@@ -125,24 +127,50 @@ void CTitle::Render(CCamera* _camera) {
 	T_Title.Render(Vector2((width - T_Title.GetWidth()) / 2, TITLE_TITLETOPSPACE),
 		Vector4(1, 1, 1, T_DefaultAlpha), *_camera);
 	
-	//ポップ描画
-	for (int i = 0; i < TITLE_MENUCOUNT; i++)
+	if (T_ScenePhase == PHASE_NEXT)
 	{
-		//選択時
-		if (i == T_MenuSelectNo)
+		//ポップ描画
+		for (int i = 0; i < TITLE_MENUCOUNT; i++)
 		{
-			auto PS1P = Vector3((width - T_PopSelect[i].GetWidth()) / 2 + T_FeedInOffsetX[i],
-				(height - T_PopSelect[i].GetHeight()) / 2 + i * TITLE_POPSPACE + TITLE_POPTOPSPACE, 0);
-			auto PS1C = Vector4(1.0f, 1.0f, 1.0f, T_FeedInPopAlpha[i]);
-			T_PopSelect[i].Render(PS1P, PS1C, *_camera);
+			//選択時
+			if (i == T_MenuSelectNo)
+			{
+				auto PS1P = Vector3((width - T_PopSelect[i].GetWidth()) / 2 + T_FeedInOffsetX[i],
+					(height - T_PopSelect[i].GetHeight()) / 2 + i * TITLE_POPSPACE + TITLE_POPTOPSPACE, 0);
+				auto PS1C = Vector4(1.0f, 1.0f, 1.0f, T_DefaultAlpha);
+				T_PopSelect[i].Render(PS1P, PS1C, *_camera);
+			}
+			//非選択時
+			else
+			{
+				auto PP = Vector3((width - T_Pop[i].GetWidth()) / 2 + T_FeedInOffsetX[i],
+					(height - T_Pop[i].GetHeight()) / 2 + i * TITLE_POPSPACE + TITLE_POPTOPSPACE, 0);
+				auto PC = Vector4(1.0f, 1.0f, 1.0f, T_FeedOutPopAlpha);
+				T_Pop[i].Render(PP, PC, *_camera);
+			}
 		}
-		//非選択時
-		else
+	}
+	else
+	{
+		//ポップ描画
+		for (int i = 0; i < TITLE_MENUCOUNT; i++)
 		{
-			auto PP = Vector3((width - T_Pop[i].GetWidth()) / 2 + T_FeedInOffsetX[i],
-				(height - T_Pop[i].GetHeight()) / 2 + i * TITLE_POPSPACE + TITLE_POPTOPSPACE, 0);
-			auto PC = Vector4(1.0f, 1.0f, 1.0f, T_FeedInPopAlpha[i]);
-			T_Pop[i].Render(PP, PC, *_camera);
+			//選択時
+			if (i == T_MenuSelectNo)
+			{
+				auto PS1P = Vector3((width - T_PopSelect[i].GetWidth()) / 2 + T_FeedInOffsetX[i],
+					(height - T_PopSelect[i].GetHeight()) / 2 + i * TITLE_POPSPACE + TITLE_POPTOPSPACE, 0);
+				auto PS1C = Vector4(1.0f, 1.0f, 1.0f, T_FeedInPopAlpha[i]);
+				T_PopSelect[i].Render(PS1P, PS1C, *_camera);
+			}
+			//非選択時
+			else
+			{
+				auto PP = Vector3((width - T_Pop[i].GetWidth()) / 2 + T_FeedInOffsetX[i],
+					(height - T_Pop[i].GetHeight()) / 2 + i * TITLE_POPSPACE + TITLE_POPTOPSPACE, 0);
+				auto PC = Vector4(1.0f, 1.0f, 1.0f, T_FeedInPopAlpha[i]);
+				T_Pop[i].Render(PP, PC, *_camera);
+			}
 		}
 	}
 }
@@ -175,11 +203,7 @@ void CTitle::FeedIn() {
 	//背景
 	if (T_DefaultAlpha < 1)
 	{
-		T_DefaultAlpha += TITLE_FEEDALPHASPEED;
-		if (T_DefaultAlpha > 1)
-		{
-			T_DefaultAlpha = 1;
-		}
+		T_DefaultAlpha = MaxOrMinAdjust(T_DefaultAlpha, TITLE_FEEDALPHASPEED, 1, 0);
 	}
 	//メニューポップ
 	else if (T_FeedInPopAlpha[TITLE_MENUCOUNT - 1] < 1 || T_FeedInOffsetX[TITLE_MENUCOUNT - 1] < 0)
@@ -190,23 +214,13 @@ void CTitle::FeedIn() {
 			if (T_FeedPopNow >= i)
 			{
 				//アルファ値の増加
-				T_FeedInPopAlpha[i] += TITLE_FEEDALPHASPEED;
-				//超えたら戻す
-				if (T_FeedInPopAlpha[i] >= 1)
-				{
-					T_FeedInPopAlpha[i] = 1;
-				}
+				T_FeedInPopAlpha[i] = MaxOrMinAdjust(T_FeedInPopAlpha[i], TITLE_FEEDALPHASPEED, 1, 0);
 				//特定のアルファ値に達すると、次のポップへと切り替わる
 				if (T_FeedInPopAlpha[i] >= TITLE_FEEDTIMINGALPHA && i == T_FeedPopNow && i != TITLE_MENUCOUNT - 1)
 				{
 					T_FeedPopNow++;
 				}
-
-				T_FeedInOffsetX[i] += TITLE_FEEDSPEEDX;
-				if (T_FeedInOffsetX[i] > 0)
-				{
-					T_FeedInOffsetX[i] = 0;
-				}
+				T_FeedInOffsetX[i] = MaxOrMinAdjust(T_FeedInOffsetX[i], TITLE_FEEDSPEEDX, 1, 0);
 			}
 		}
 	}
@@ -215,23 +229,15 @@ void CTitle::FeedOut() {
 	//選択したポップ以外のアルファ値を下げる
 	if (T_FeedOutPopAlpha > 0)
 	{
-		T_FeedOutPopAlpha -= TITLE_FEEDALPHASPEED;
-		if (T_FeedOutPopAlpha < 0)
-		{
-			T_FeedOutPopAlpha = 0;
-		}
+		T_FeedOutPopAlpha = MaxOrMinAdjust(T_FeedOutPopAlpha, -TITLE_FEEDALPHASPEED, 1, 0);
 	}
 	//その他
 	else if (T_DefaultAlpha > 0)
 	{
-		T_DefaultAlpha -= TITLE_FEEDALPHASPEED;
-		if (T_DefaultAlpha <= 0)
-		{
-			T_DefaultAlpha = 0;
-		}
+		T_DefaultAlpha = MaxOrMinAdjust(T_DefaultAlpha, -TITLE_FEEDALPHASPEED, 1, 0);
 	}
 }
-void CTitle::GamePadControl() {
+void CTitle::MouseControl() {
 	float width = g_pFramework->GetWindow()->GetWidth();
 	float height = g_pFramework->GetWindow()->GetHeight();
 	//マウス座標を記録
@@ -290,4 +296,14 @@ bool CTitle::FeedOutEndCheck() {
 		return false;
 	}
 	return true;
+}
+
+float CTitle::MaxOrMinAdjust(float value, float IorDvalue, float max, float min) {
+	value += IorDvalue;
+	if (value > max)
+		value = max;
+	if (value < min)
+		value = min;
+
+	return value;
 }
