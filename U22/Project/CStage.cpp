@@ -11,6 +11,8 @@ bool CStage::Load() {
 }
 
 void CStage::Initialize() {
+	//
+	int a = 0;
 }
 
 void CStage::Update() {
