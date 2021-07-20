@@ -27,8 +27,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "D:/U22_Project/Library/Include/External/GLM/out/build/x64-Debug",
-		"source" : "D:/U22_Project/Library/Include/External/GLM"
+		"build" : "C:/Users/AsfaT/source/repos/WonderWolfGirl/Library/Include/External/GLM/out/build/x64-Debug",
+		"source" : "C:/Users/AsfaT/source/repos/WonderWolfGirl/Library/Include/External/GLM"
 	},
 	"version" : 
 	{

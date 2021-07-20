@@ -11,6 +11,8 @@ bool CStage::Load() {
 }
 
 void CStage::Initialize() {
+	//
+	int a = 0;
 }
 
 void CStage::Update() {
@@ -24,3 +26,9 @@ void CStage::RenderDebug(CCamera* _camera) {
 
 void CStage::Release() {
 }
+
+#pragma region ÉMÉ~ÉbÉN
+
+
+
+#pragma endregion
