@@ -24,7 +24,8 @@ COption::COption() :
 	SEVolumeMeter(SOUNDVOLUME_POINTCOUNT),
 	ScreenScaleMeter(SCREENSCALE_POINTCOUNT),
 	FullScreenFlg(false),
-	TextureAlpha(0){
+	TextureAlpha(0),
+	O_ScenePhase(0){
 }
 
 COption::~COption()
@@ -66,7 +67,6 @@ bool COption::Load() {
 void COption::Initialize() {
 	//テクスチャの読み込み
 	Load();
-
 	
 	FILE* fp;
 	if (fopen_s(&fp, "ScreenData.dat", "rb") != NULL)
@@ -165,6 +165,7 @@ float COption::MaxOrMinAdjust(float value, float IorDvalue, float max, float min
 }
 
 void COption::SlideBGMBar() {
+	int BeforeBGMVol = BGMVolumeMeter;
 
 }
 
