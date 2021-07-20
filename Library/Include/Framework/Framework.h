@@ -51,6 +51,9 @@ public:
     std::shared_ptr<u22::Window> GetWindow(void) const {
         return this->window;
     }
+    void WindowClose(void) const {
+        this->window->Close();
+    }
 };
 class Framework {
 private:
@@ -68,6 +71,16 @@ private:
     std::shared_ptr<u22::audio::Audio> _audio;
     //! アプリケーション
     std::shared_ptr<u22::IApplicaion> _applicaion;
+    /// <summary>
+    /// 表示
+    /// </summary>
+    /// <param name=""></param>
+    //void PutLocalTime(void);
+    /// <summary>
+    /// 設定
+    /// </summary>
+    /// <param name="name"></param>
+    bool SetCurrentPath(const char* name = "Resource");
 public:
     /// <summary>
     /// ゲッター
@@ -102,6 +115,11 @@ public:
     /// <param name=""></param>
     /// <returns>成功</returns>
     bool Cleanup(void);
+    /// <summary>
+    /// ウインドウを閉じる
+    /// </summary>
+    /// <param name=""></param>
+    void WindowClose(void) const;
 };
 }
 #endif // !U22_FRAMEWORK_FRAMEWORK_H

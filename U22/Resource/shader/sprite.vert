@@ -14,6 +14,11 @@ uniform vec4 uniform_rectangle; // left top right bottom
 uniform mat4 model_transform;
 uniform mat4 view_projection;
 
+void Swap(inout float a, inout float b){
+    float temp = a;
+    a = b;
+    b = temp;
+}
 
 vec2 ConputeTexcoordLeftTop(void) {
     float left = uniform_rectangle.x / uniform_size.x;
@@ -21,6 +26,13 @@ vec2 ConputeTexcoordLeftTop(void) {
     float top = uniform_rectangle.y / uniform_size.y;
     float bottom = uniform_rectangle.w / uniform_size.y;
 
+    if(left > right) {
+        Swap(left, right);
+    } // if
+    if(top > bottom) {
+        Swap(top, bottom);
+    } // if
+    
     return vec2(left, top);
 }
 
@@ -29,6 +41,13 @@ vec2 ConputeTexcoordLeftBottom(void) {
     float right = uniform_rectangle.z / uniform_size.x;
     float top = uniform_rectangle.y / uniform_size.y;
     float bottom = uniform_rectangle.w / uniform_size.y;
+
+    if(left > right) {
+        Swap(left, right);
+    } // if
+    if(top > bottom) {
+        Swap(top, bottom);
+    } // if
 
     return vec2(left, bottom);
 }
@@ -39,6 +58,13 @@ vec2 ConputeTexcoordRightBottom(void) {
     float top = uniform_rectangle.y / uniform_size.y;
     float bottom = uniform_rectangle.w / uniform_size.y;
 
+    if(left > right){
+        Swap(left, right);
+    } // if
+    if(top > bottom) {
+        Swap(top, bottom);
+    } // if
+
     return vec2(right, bottom);
 }
 
@@ -47,6 +73,13 @@ vec2 ConputeTexcoordRightTop(void) {
     float right = uniform_rectangle.z / uniform_size.x;
     float top = uniform_rectangle.y / uniform_size.y;
     float bottom = uniform_rectangle.w / uniform_size.y;
+
+    if(left > right){
+        Swap(left, right);
+    } // if
+    if(top > bottom) {
+        Swap(top, bottom);
+    } // if
 
     return vec2(right, top);
 }

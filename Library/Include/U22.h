@@ -44,6 +44,7 @@
  */
 #define g_pAidio (u22::Framework::GetInfomation()->aidio)
 
+
 using namespace u22::utility;
 using namespace u22::animation;
 

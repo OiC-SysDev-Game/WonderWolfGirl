@@ -11,7 +11,7 @@ bool CGirl::Load()
 	texture[0].Load("Character/Girl/wait_91_246_30.png");
 	texture[1].Load("Character/Girl/walk_136_246_25.png");
 	texture[2].Load("Character/Girl/hit_106_246_30.png");
-	texture[3].Load("Character/Girl/down_260_240.png");
+	texture[3].Load("Character/Girl/down_260_240_30.png");
 
 	SpriteAnimationCreate anim[] =
 	{
@@ -182,7 +182,7 @@ void CGirl::Move(void)
 		Xpos += Xspd;
 		Ypos += Yspd;
 
-		if (Ypos + motion.GetSourceRectangle().GetHeight() >= 700) //height >= 700) 
+		if (Ypos + motion.GetSourceRectangle().GetHeight() > 700) //height >= 700) 
 		{
 			Ypos = 700 - motion.GetSourceRectangle().GetHeight(); //height;
 			Yspd = 0;
