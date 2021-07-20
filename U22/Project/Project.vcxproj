@@ -163,10 +163,11 @@
     <ClCompile Include="CStageObject.cpp" />
     <ClCompile Include="CWolf.cpp" />
     <ClCompile Include="GameApplicaion.cpp" />
-    <ClCompile Include="Girl.cpp" />
+    <ClCompile Include="CGirl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SceneBase.cpp" />
     <ClCompile Include="StageSelect.cpp" />
+    <ClCompile Include="CSwordSoldier.cpp" />
     <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +179,7 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StageObject.h" />
     <ClInclude Include="StageSelect.h" />
+    <ClInclude Include="SwordSoldier.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Wolf.h" />
   </ItemGroup>

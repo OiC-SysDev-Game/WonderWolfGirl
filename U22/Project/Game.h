@@ -3,6 +3,7 @@
 class CGame : public CSceneBase
 {
 private:
+	u22::graphics::Camera _camera;
 public:
 	CGame();
 	~CGame();

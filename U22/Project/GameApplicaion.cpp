@@ -17,7 +17,7 @@ bool u22::GameApplication::Initialize(void) {
     SetCurrentPath();
 	_camera.Initalize2DCamera();
     //‰‰ñ‚ÉŽÀs‚³‚ê‚éƒV[ƒ“‚Ì‰Šú‰»
-    pScene = new CTitle();
+    pScene = new CGame();
     pScene->Initialize();
     return true;
 }

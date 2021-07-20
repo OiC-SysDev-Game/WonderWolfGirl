@@ -63,7 +63,10 @@
     <ClCompile Include="CStageObject.cpp">
       <Filter>ソース ファイル\Stage</Filter>
     </ClCompile>
-    <ClCompile Include="Girl.cpp">
+    <ClCompile Include="CGirl.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CSwordSoldier.cpp">
       <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,6 +99,9 @@
       <Filter>ヘッダー ファイル\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Wolf.h">
+      <Filter>ヘッダー ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="SwordSoldier.h">
       <Filter>ヘッダー ファイル\Character</Filter>
     </ClInclude>
   </ItemGroup>
