@@ -298,13 +298,3 @@ bool CTitle::FeedOutEndCheck() {
 	}
 	return true;
 }
-
-float CTitle::MaxOrMinAdjust(float value, float IorDvalue, float max, float min) {
-	value += IorDvalue;
-	if (value > max)
-		value = max;
-	if (value < min)
-		value = min;
-
-	return value;
-}

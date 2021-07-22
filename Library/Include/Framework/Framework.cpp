@@ -1,8 +1,29 @@
 #include "Framework.h"
 
+#include <filesystem>
+
 
 u22::FrameworkInfo u22::Framework::_infomation;
 
+
+bool u22::Framework::SetCurrentPath(const char* name) {
+    std::filesystem::path default_path = std::filesystem::current_path();
+    if (auto work = default_path.parent_path(); true) {
+        work.append(name);
+        if (std::filesystem::exists(work)) {
+            std::filesystem::current_path(work);
+            return true;
+        } // if
+    } // if
+
+    auto current_path = default_path;
+    current_path.append(name);
+    if (std::filesystem::exists(current_path) && std::filesystem::is_directory(current_path)) {
+        std::filesystem::current_path(current_path);
+        return true;
+    } // if
+    return false;
+}
 
 u22::FrameworkInfo* u22::Framework::GetInfomation(void) {
     return &_infomation;
@@ -28,6 +49,8 @@ u22::Framework::~Framework() {
 }
 
 bool u22::Framework::Setup(const std::shared_ptr<u22::IApplicaion>& ptr, u22::ApplicationInfo* info) {
+    SetCurrentPath("Resource");
+
     // ウインドウ
     if (!_window->Create("None", info->window_width, info->window_height, info->window_position_x, info->window_position_y, info->full_screen_mode)) {
         return false;
@@ -71,4 +94,8 @@ bool u22::Framework::Cleanup(void) {
     _graphics->Release();
     _audio->Release();
     return true;
+}
+
+void u22::Framework::WindowClose(void) const {
+    _window->Close();
 }

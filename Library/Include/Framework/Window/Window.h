@@ -12,6 +12,8 @@ class Window {
 private:
     //! ウインドウ
     ::GLFWwindow* _handle;
+    //! ディスプレイ
+    ::GLFWmonitor* _monitor;
     //! タイトル
     std::string _title;
     //! サイズ
@@ -73,6 +75,12 @@ public:
     /// <param name=""></param>
     /// <returns></returns>
     bool Destroy(void);
+    /// <summary>
+    /// 閉じる
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
+    void Close(void) const;
     /// <summary>
     /// フリップ
     /// </summary>

@@ -1,6 +1,16 @@
 #pragma once
 #include "SceneBase.h"
 
+#define		FILEKEY					0x65
+
+#define		SOUNDVOLUME_INTERVAL		0.05f
+#define		SOUNDVOLUME_POINTCOUNT		21
+#define		SCREENSCALE_WIDTHINTERVAL 	160
+#define		SCREENSCALE_HEIGHTINTERVAL 	90
+#define		SCREENSCALE_POINTCOUNT		7
+
+#define		OPTION_TEXTUREALPHAINC		0.01f
+
 class COption : public CSceneBase
 {
 private:
@@ -26,15 +36,16 @@ private:
 	int O_ScenePhase;
 	float TextureAlpha;
 
+	void MouseControl();
+	void SlideBGMBar();
+	void SlideSEBar();
+	void SlideScreenScaleBar();
+
+protected:
 	void FeedIn();
 	bool FeedInEndCheck();
 	void FeedOut();
 	bool FeedOutEndCheck();
-	void MouseControl();
-	float MaxOrMinAdjust(float value, float IorDvalue, float max, float min);
-	void SlideBGMBar();
-	void SlideSEBar();
-	void SlideScreenScaleBar();
 
 public:
 	COption();

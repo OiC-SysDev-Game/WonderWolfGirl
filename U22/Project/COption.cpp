@@ -1,16 +1,6 @@
 #include "GameApplicaion.h"
 #include "Option.h"
 
-#define		FILEKEY					0x65
-
-#define		SOUNDVOLUME_INTERVAL		0.05f
-#define		SOUNDVOLUME_POINTCOUNT		21
-#define		SCREENSCALE_WIDTHINTERVAL 	160
-#define		SCREENSCALE_HEIGHTINTERVAL 	90
-#define		SCREENSCALE_POINTCOUNT		7
-
-#define		OPTION_TEXTUREALPHAINC		0.01f
-
 COption::COption() :
 	CSceneBase(),
 	BackImage(),
@@ -153,15 +143,6 @@ bool COption::FeedOutEndCheck() {
 }
 void COption::MouseControl() {
 
-}
-float COption::MaxOrMinAdjust(float value, float IorDvalue, float max, float min) {
-	value += IorDvalue;
-	if (value > max)
-		value = max;
-	if (value < min)
-		value = min;
-
-	return value;
 }
 
 void COption::SlideBGMBar() {

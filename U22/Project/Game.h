@@ -3,6 +3,13 @@
 class CGame : public CSceneBase
 {
 private:
+
+protected:
+	void FeedIn();
+	bool FeedInEndCheck();
+	void FeedOut();
+	bool FeedOutEndCheck();
+
 public:
 	CGame();
 	~CGame();

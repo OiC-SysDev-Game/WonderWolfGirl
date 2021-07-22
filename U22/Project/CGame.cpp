@@ -34,3 +34,17 @@ void CGame::RenderDebug(CCamera* _camera) {
 
 void CGame::Release() {
 }
+
+void CGame::FeedIn() {
+	//フェードイン処理
+}
+void CGame::FeedOut() {
+	//フェードアウト処理
+}
+
+bool CGame::FeedInEndCheck() {
+	return true;
+}
+bool CGame::FeedOutEndCheck() {
+	return true;
+}
