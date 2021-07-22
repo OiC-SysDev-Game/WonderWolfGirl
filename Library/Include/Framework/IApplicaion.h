@@ -9,12 +9,7 @@ protected:
     /// 設定
     /// </summary>
     /// <param name="name"></param>
-    void SetCurrentPath(const char* name = "Resource");
-    /// <summary>
-    /// 表示
-    /// </summary>
-    /// <param name=""></param>
-    //void PutLocalTime(void);
+    bool SetCurrentPath(const char* name = "Resource");
 public:
     /// <summary>
     /// コンストラクタ

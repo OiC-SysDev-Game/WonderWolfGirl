@@ -14,6 +14,7 @@ bool u22::graphics::Graphics::Setup(void) {
     ::glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     ::glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     ::glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    ::glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     // font
     if (::FT_Init_FreeType(&_font)) {
@@ -101,14 +102,17 @@ void u22::graphics::Graphics::ClearTarget(const u22::math::Vector4F& color, floa
 
 
 void u22::graphics::Graphics::RenderStart(void) {
+    // 2d depth stencil = disable
+    // culling = disable
+    
     // デフォルトのフレームバッファに対しての操作
     ::glDisable(GL_DEPTH);
     //::glEnable(GL_DEPTH);
-
-    //::glDisable(GL_CULL_FACE);
-    ::glEnable(GL_CULL_FACE);
-    ::glFrontFace(GL_CCW); // default
-    ::glCullFace(GL_BACK); // default
+    
+    ::glDisable(GL_CULL_FACE);
+    //::glEnable(GL_CULL_FACE);
+    //::glFrontFace(GL_CCW); // default
+    //::glCullFace(GL_BACK); // default
 
     ::glEnable(GL_BLEND);
     ::glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
