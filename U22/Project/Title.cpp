@@ -56,7 +56,6 @@ void CTitle::Initialize() {
 	T_MenuSelectNo = -1;
 
 	T_DefaultAlpha = 0;
-
 	T_FeedOutPopAlpha = 1;
 	T_FeedPopNow = 0;
 }
@@ -221,7 +220,7 @@ void CTitle::FeedIn() {
 				{
 					T_FeedPopNow++;
 				}
-				T_FeedInOffsetX[i] = MaxOrMinAdjust(T_FeedInOffsetX[i], TITLE_FEEDSPEEDX, 1, 0);
+				T_FeedInOffsetX[i] = MaxOrMinAdjust(T_FeedInOffsetX[i], TITLE_FEEDSPEEDX, 0, TITLE_FEEDSPACEX);
 			}
 		}
 	}
