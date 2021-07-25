@@ -9,10 +9,10 @@ class CGirl
 {
 private:
 	//‚Æ‚è‚ ‚¦‚¸“K“–‚È”’l
-	int max_Health = 3;
-	float accelerate_Spd = 0.2;
-	float decelerate_Spd = 0.14;
-	float max_Spd = 2.7;
+	int maxHealth = 3;
+	float accelerateSpd = 0.2;
+	float decelerateSpd = 0.14;
+	float maxSpd = 2.7;
 	float gravity = 0.45;
 
 	float invicibleTime = 1;
@@ -21,7 +21,8 @@ private:
 	//Œã‚Åíœ
 	//float width = 35;
 	//float height = 70;
-
+	// 
+	//std::clamp(ŠÛ‚ß‚İ)
 	int health;		//‰Šú’l3
 
 	bool isRide;	//˜T‚Éæ‚Á‚Ä‚¢‚é‚©

@@ -8,9 +8,10 @@ CGirl::~CGirl()
 
 bool CGirl::Load() 
 {
+	//幅、高さ、コマ数
 	texture[0].Load("Character/Girl/wait_91_246_30.png");
 	texture[1].Load("Character/Girl/walk_136_246_25.png");
-	texture[2].Load("Character/Girl/hit_106_246_30.png");
+	texture[2].Load("Character/Girl/hit_106_246_10.png");
 	texture[3].Load("Character/Girl/down_260_240_30.png");
 
 	SpriteAnimationCreate anim[] =
@@ -49,7 +50,7 @@ bool CGirl::Load()
 
 void CGirl::Initialize(CWolf* arg)
 {
-	health = max_Health;
+	health = maxHealth;
 
 	isRide = false;
 	isMove = false;
@@ -79,7 +80,6 @@ void CGirl::Render(CCamera* _camera)
 {
 	CRectangle rect = motion.GetSourceRectangle();
 
-	//映らない
 	if (!isRight) {
 		float tmp = rect.right;
 		rect.right = rect.left;
@@ -127,13 +127,13 @@ void CGirl::Acceleration(void)
 {
 	if (isRight)
 	{
-		Xspd += accelerate_Spd;
-		if (Xspd > max_Spd) Xspd = max_Spd;
+		Xspd += accelerateSpd;
+		if (Xspd > maxSpd) Xspd = maxSpd;
 	}
 	else
 	{
-		Xspd += -accelerate_Spd;
-		if (Xspd < -max_Spd) Xspd = -max_Spd;
+		Xspd += -accelerateSpd;
+		if (Xspd < -maxSpd) Xspd = -maxSpd;
 	}
 
 	if (motion.GetMotionNo() == emWait)
@@ -144,7 +144,7 @@ void CGirl::Neutral(void)
 {
 	if (Xspd > 0)
 	{
-		Xspd -= decelerate_Spd;
+		Xspd -= decelerateSpd;
 		if (Xspd <= 0) 
 		{
 			Xspd = 0;
@@ -152,7 +152,7 @@ void CGirl::Neutral(void)
 	}
 	else if(Xspd < 0)
 	{
-		Xspd += decelerate_Spd;
+		Xspd += decelerateSpd;
 		if (Xspd >= 0)
 		{
 			Xspd = 0;

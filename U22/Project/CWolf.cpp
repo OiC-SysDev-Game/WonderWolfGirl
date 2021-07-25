@@ -14,7 +14,7 @@ bool CWolf::Load() {
 
 void CWolf::Initialize(CGirl* arg) 
 {
-	health = max_Health;
+	health = maxHealth;
 	isCarry = false;
 	isRight = true;
 	canJump = true;
@@ -74,7 +74,7 @@ void CWolf::Release()
 bool CWolf::TakeDamage(int damage, bool isRatio)
 {
 	if (!isRatio) health -= damage;
-	else health -= int(max_Health * (damage / 100));
+	else health -= int(maxHealth * (damage / 100));
 
 	if (isCarry)
 	{
@@ -89,13 +89,13 @@ void CWolf::Acceleration(bool isRight)
 {
 	if (isRight)
 	{
-		Xspd += accelerate_Spd;
-		if (Xspd > max_Spd) Xspd = max_Spd;
+		Xspd += accelerateSpd;
+		if (Xspd > maxSpd) Xspd = maxSpd;
 	}
 	else
 	{
-		Xspd -= accelerate_Spd;
-		if (Xspd < -max_Spd) Xspd = -max_Spd;
+		Xspd -= accelerateSpd;
+		if (Xspd < -maxSpd) Xspd = -maxSpd;
 	}
 }
 
@@ -103,7 +103,7 @@ void CWolf::Jump(void)
 {
 	if (canJump)
 	{
-		Yspd = -jump_Spd;
+		Yspd = -jumpSpd;
 		canJump = false;
 	}
 }
@@ -112,12 +112,12 @@ void CWolf::Neutral(void)
 {
 	if (Xspd > 0)
 	{
-		Xspd -= decelerate_Spd;
+		Xspd -= decelerateSpd;
 		if (Xspd <= 0) Xspd = 0;
 	}
 	else if (Xspd < 0)
 	{
-		Xspd += decelerate_Spd;
+		Xspd += decelerateSpd;
 		if (Xspd >= 0) Xspd = 0;
 	}
 }
@@ -130,7 +130,7 @@ void CWolf::Move(void)
 	Ypos += Yspd;
 
 	//’…’nˆ—
-	if (Ypos + height >= 700)
+	if (Ypos + height > 700)
 	{
 		Ypos = 700 - height;
 		Yspd = 0;

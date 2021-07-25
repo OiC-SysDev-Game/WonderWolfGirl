@@ -9,16 +9,16 @@ class CWolf
 {
 private:
 	//‚Æ‚è‚ ‚¦‚¸“K“–‚È”’l
-	const int max_Health = 100;
-	const float max_Spd = 5;
-	const float accelerate_Spd = 0.5;
-	const float decelerate_Spd = 0.25;
-	const float jump_Spd = 10;
-	const float gravity = 0.45;
+	int maxHealth = 100;
+	float maxSpd = 5;
+	float accelerateSpd = 0.5;
+	float decelerateSpd = 0.25;
+	float jumpSpd = 10;
+	float gravity = 0.45;
 
 	//Œã‚Åíœ
-	const int width = 320;
-	const int height = 180;
+	int width = 320;
+	int height = 180;
 
 	int health;		//‰Šú’l100
 
@@ -43,6 +43,7 @@ private:
 		eHit,
 		eDown
 	};
+
 public:
 	CWolf();
 	~CWolf();
