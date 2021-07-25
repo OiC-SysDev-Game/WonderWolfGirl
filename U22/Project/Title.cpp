@@ -17,7 +17,7 @@ CTitle::CTitle() :
 	T_FeedInPopAlpha(),
 	T_FeedOutPopAlpha(1),
 	T_FeedInOffsetX(),
-	T_FeedPopNow(0){
+	T_FeedPopNow(0) {
 }
 
 CTitle::~CTitle()
@@ -56,7 +56,6 @@ void CTitle::Initialize() {
 	T_MenuSelectNo = -1;
 
 	T_DefaultAlpha = 0;
-
 	T_FeedOutPopAlpha = 1;
 	T_FeedPopNow = 0;
 }
@@ -117,17 +116,17 @@ void CTitle::Update() {
 	}
 }
 
-void CTitle::Render(CCamera* _camera) {	
+void CTitle::Render(CCamera* _camera) {
 	float width = g_pFramework->GetWindow()->GetWidth();
 	float height = g_pFramework->GetWindow()->GetHeight();
-	
+
 	//背景描画
 	T_BackImage.Render(Vector2(0, 0), Vector4(1, 1, 1, T_DefaultAlpha), *_camera);
-	
+
 	//タイトル描画
 	T_Title.Render(Vector2((width - T_Title.GetWidth()) / 2, TITLE_TITLETOPSPACE),
 		Vector4(1, 1, 1, T_DefaultAlpha), *_camera);
-	
+
 	if (T_ScenePhase == PHASE_NEXT)
 	{
 		//ポップ描画
@@ -204,7 +203,7 @@ void CTitle::FeedIn() {
 	//背景
 	if (T_DefaultAlpha < 1)
 	{
-		T_DefaultAlpha = MaxOrMinAdjust(T_DefaultAlpha, TITLE_FEEDALPHASPEED, 1, 0);
+		T_DefaultAlpha = MaxOrMinAdjust(T_DefaultAlpha, 1.0f / TITLE_FEEDTIME, 1, 0);
 	}
 	//メニューポップ
 	else if (T_FeedInPopAlpha[TITLE_MENUCOUNT - 1] < 1 || T_FeedInOffsetX[TITLE_MENUCOUNT - 1] < 0)
@@ -215,13 +214,13 @@ void CTitle::FeedIn() {
 			if (T_FeedPopNow >= i)
 			{
 				//アルファ値の増加
-				T_FeedInPopAlpha[i] = MaxOrMinAdjust(T_FeedInPopAlpha[i], TITLE_FEEDALPHASPEED, 1, 0);
+				T_FeedInPopAlpha[i] = MaxOrMinAdjust(T_FeedInPopAlpha[i], 1.0f / TITLE_FEEDTIME, 1, 0);
 				//特定のアルファ値に達すると、次のポップへと切り替わる
 				if (T_FeedInPopAlpha[i] >= TITLE_FEEDTIMINGALPHA && i == T_FeedPopNow && i != TITLE_MENUCOUNT - 1)
 				{
 					T_FeedPopNow++;
 				}
-				T_FeedInOffsetX[i] = MaxOrMinAdjust(T_FeedInOffsetX[i], TITLE_FEEDSPEEDX, 1, 0);
+				T_FeedInOffsetX[i] = MaxOrMinAdjust(T_FeedInOffsetX[i], -TITLE_FEEDSPACEX / TITLE_FEEDTIME, 0, TITLE_FEEDSPACEX);
 			}
 		}
 	}
@@ -230,19 +229,36 @@ void CTitle::FeedOut() {
 	//選択したポップ以外のアルファ値を下げる
 	if (T_FeedOutPopAlpha > 0)
 	{
-		T_FeedOutPopAlpha = MaxOrMinAdjust(T_FeedOutPopAlpha, -TITLE_FEEDALPHASPEED, 1, 0);
+		T_FeedOutPopAlpha = MaxOrMinAdjust(T_FeedOutPopAlpha, -1.0f / TITLE_FEEDTIME, 1, 0);
 	}
 	//その他
 	else if (T_DefaultAlpha > 0)
 	{
-		T_DefaultAlpha = MaxOrMinAdjust(T_DefaultAlpha, -TITLE_FEEDALPHASPEED, 1, 0);
+		T_DefaultAlpha = MaxOrMinAdjust(T_DefaultAlpha, -1.0f / TITLE_FEEDTIME, 1, 0);
 	}
 }
+bool CTitle::FeedInEndCheck() {
+	//メニューポップが半透明、またはスライドし切れていない時、操作を受け付けない
+	if (T_FeedInPopAlpha[TITLE_MENUCOUNT - 1] < 1 || T_FeedInOffsetX[TITLE_MENUCOUNT - 1] < 0)
+	{
+		return false;
+	}
+	return true;
+}
+bool CTitle::FeedOutEndCheck() {
+	if (T_DefaultAlpha > 0)
+	{
+		return false;
+	}
+	return true;
+}
+
 void CTitle::MouseControl() {
 	float width = g_pFramework->GetWindow()->GetWidth();
 	float height = g_pFramework->GetWindow()->GetHeight();
 	//マウス座標を記録
 	CRectangle MousePos = CRectangle(g_pInput->GetMouseX(), g_pInput->GetMouseY(), g_pInput->GetMouseX() + 1, g_pInput->GetMouseY() + 1);
+	bool NotSelectFlg = false;
 	for (int i = 0; i < TITLE_MENUCOUNT; i++)
 	{
 		CRectangle rect;
@@ -264,6 +280,7 @@ void CTitle::MouseControl() {
 		if (rect.CollisionRectangle(MousePos))
 		{
 			T_MenuSelectNo = i;
+			NotSelectFlg = true;
 			if (g_pInput->IsPush(MouseButton::Left))
 			{
 				T_ScenePhase++;
@@ -282,29 +299,8 @@ void CTitle::MouseControl() {
 			}
 		}
 	}
-}
-bool CTitle::FeedInEndCheck() {
-	//メニューポップが半透明、またはスライドし切れていない時、操作を受け付けない
-	if (T_FeedInPopAlpha[TITLE_MENUCOUNT - 1] < 1 || T_FeedInOffsetX[TITLE_MENUCOUNT - 1] < 0)
+	if (!NotSelectFlg)
 	{
-		return false;
+		T_MenuSelectNo = -1;
 	}
-	return true;
-}
-bool CTitle::FeedOutEndCheck() {
-	if (T_DefaultAlpha > 0)
-	{
-		return false;
-	}
-	return true;
-}
-
-float CTitle::MaxOrMinAdjust(float value, float IorDvalue, float max, float min) {
-	value += IorDvalue;
-	if (value > max)
-		value = max;
-	if (value < min)
-		value = min;
-
-	return value;
 }

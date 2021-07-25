@@ -157,12 +157,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CEnemy.cpp" />
-    <ClCompile Include="CGame.cpp" />
-    <ClCompile Include="COption.cpp" />
-    <ClCompile Include="CStage.cpp" />
-    <ClCompile Include="CStageObject.cpp" />
-    <ClCompile Include="CWolf.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Option.cpp" />
+    <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="StageObject.cpp" />
+    <ClCompile Include="Wolf.cpp" />
     <ClCompile Include="GameApplicaion.cpp" />
     <ClCompile Include="Girl.cpp" />
     <ClCompile Include="main.cpp" />

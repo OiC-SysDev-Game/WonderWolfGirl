@@ -32,6 +32,11 @@ protected:
 	SpriteAnimationController motion;
 
 public:
+	CEnemy() {
+	}
+
+	~CEnemy()
+	{};
 	virtual bool Load() = 0;
 	virtual void Initialize() = 0;
 	virtual void Update() = 0;

@@ -6,8 +6,7 @@
 #define			TITLE_POPTOPSPACE		50.0f
 #define			TITLE_TITLETOPSPACE		50.0f
 
-#define			TITLE_FEEDALPHASPEED	0.02f
-#define			TITLE_FEEDSPEEDX		30.0f
+#define			TITLE_FEEDTIME			30.0f
 #define			TITLE_FEEDSPACEX		-600.0f
 #define			TITLE_FEEDTIMINGALPHA	0.5f
 
@@ -58,12 +57,12 @@ private:
 	float				T_FeedInOffsetX[TITLE_MENUCOUNT];	//フェードイン時の移動量
 	int					T_FeedPopNow;						//フェードイン時、現在フェード処理を行っているポップ番号
 
+protected:
 	void FeedIn();
 	bool FeedInEndCheck();
 	void FeedOut();
 	bool FeedOutEndCheck();
 	void MouseControl();
-	float MaxOrMinAdjust(float value, float IorDvalue, float max, float min);
 
 public:
 	CTitle();

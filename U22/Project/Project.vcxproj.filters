@@ -42,7 +42,7 @@
     <ClCompile Include="Title.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="CGame.cpp">
+    <ClCompile Include="Game.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="SceneBase.cpp">
@@ -51,22 +51,22 @@
     <ClCompile Include="StageSelect.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="CWolf.cpp">
+    <ClCompile Include="Wolf.cpp">
       <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
-    <ClCompile Include="CEnemy.cpp">
+    <ClCompile Include="Enemy.cpp">
       <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
-    <ClCompile Include="CStage.cpp">
+    <ClCompile Include="Stage.cpp">
       <Filter>ソース ファイル\Stage</Filter>
     </ClCompile>
-    <ClCompile Include="CStageObject.cpp">
+    <ClCompile Include="StageObject.cpp">
       <Filter>ソース ファイル\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Girl.cpp">
       <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
-    <ClCompile Include="COption.cpp">
+    <ClCompile Include="Option.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="SwordSoldier.cpp">
