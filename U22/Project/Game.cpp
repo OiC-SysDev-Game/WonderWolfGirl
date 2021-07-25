@@ -64,3 +64,17 @@ void CGame::Release()
 	girl.Release();
 	swordSoldier.Release();
 }
+
+void CGame::FeedIn() {
+	//フェードイン処理
+}
+void CGame::FeedOut() {
+	//フェードアウト処理
+}
+
+bool CGame::FeedInEndCheck() {
+	return true;
+}
+bool CGame::FeedOutEndCheck() {
+	return true;
+}
