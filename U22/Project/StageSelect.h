@@ -8,7 +8,7 @@
 #define STSELECT_STAGEBUTTON_ANKERX 50.0f
 #define STSELECT_STAGEBUTTON_ANKERY 200.0f
 
-#define	STSELECT_FEEDTIME			20.0f
+#define	STSELECT_FEEDTIME			30.0f
 #define	STSELECT_FEEDSPACEY			400.0f
 #define	STSELECT_FEEDTIMINGALPHA	0.5f
 
@@ -27,6 +27,7 @@ private:
 	CTexture			S_BackButtonImage;
 
 	int					S_ScenePhase;						//現在のシーン進行度合い
+	int					S_MenuCommandNo;
 	int					S_StageSelectNo;					//メニュー選択番号
 
 	float				S_DefaultAlpha;							//イラストの透明度(フェードイン時に使用)

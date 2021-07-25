@@ -27,6 +27,58 @@ void CGame::Update() {
 void CGame::Render(CCamera* _camera) {
 	std::string text = "ƒQ[ƒ€‰æ–Ê\nNƒL[‚ÅŸ‚Ì‰æ–Ê‚Ö‚·‚Á‚Æ‚Î‚¹‚é‚æ";
 	::GraphicsUtilities::RenderString(Vector2(10, 10), color::rgba::kWhite, text, *_camera);
+	switch (G_ScenePhase)
+	{
+	case G_PHASE_START:
+		//“±“üˆ—
+		FeedIn();
+		if (FeedInEndCheck())
+		{
+			G_ScenePhase++;
+		}
+		break;
+	case G_PHASE_UNDER:
+		//‘€ì’†ˆ—
+
+		break;
+	case G_PHASE_NEXT:
+		//Ÿ‚Ì‰æ–Ê‚Ö‚Ìˆ—
+		FeedOut();
+		if (FeedOutEndCheck())
+		{
+			switch (G_NextAction)
+			{
+			case G_ACTION_NEXTMAP:
+				break;
+			case G_ACTION_GAMECLEAR:
+				break;
+			case G_ACTION_GAMEOVER:
+				break;
+
+			case G_ACTION_RESTART:
+				G_BackGroundBGM.Stop();
+				Initialize();
+				break;
+
+			case G_ACTION_EXITSTAGE:
+				bEnd = true;
+				NextScene = SCENENO_STAGESELECT;
+				break;
+
+			case G_ACTION_TITLEBACK:
+				bEnd = true;
+				NextScene = SCENENO_TITLE;
+				break;
+
+			default:
+				break;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
 }
 
 void CGame::RenderDebug(CCamera* _camera) {
