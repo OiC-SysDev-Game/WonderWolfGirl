@@ -24,3 +24,8 @@ void CEnemy::RenderDebug(CCamera* _camera) {
 
 void CEnemy::Release() {
 }
+
+bool CEnemy::TakeDamage() {
+	health--;
+	return health > 0;
+}
