@@ -24,6 +24,8 @@ bool CGame::Load() {
 }
 
 void CGame::Initialize() {
+	Load();
+
 	girl.Initialize(&wolf);
 	wolf.Initialize(&girl);
 	swordSoldier.Initialize();
@@ -34,6 +36,53 @@ void CGame::Update() {
 	wolf.Update();
 	girl.Update();
 	swordSoldier.Update();
+
+	//シーン状態による分岐
+	switch (G_ScenePhase)
+	{
+		//ゲームスタート
+	case G_PHASE_START:
+		FeedIn();
+		if (FeedInEndCheck())
+		{
+			G_ScenePhase++;
+		}
+		break;
+
+		//操作中
+	case G_PHASE_UNDER:
+		break;
+
+		//画面変化
+	case G_PHASE_NEXT:
+		FeedOut();
+		if (FeedOutEndCheck())
+		{
+			//G_NextActionの中身を参照し、対応した処理を実行する
+			switch (G_NextAction)
+			{
+				//マップ移動
+			case G_ACTION_NEXTMAP:
+				break;
+				//ゲームクリア
+			case G_ACTION_GAMECLEAR:
+				break;
+				//ゲームオーバー
+			case G_ACTION_GAMEOVER:
+				break;
+				//リスタート(メニュー画面コマンド)
+			case G_ACTION_RESTART:
+				break;
+				//ステージ選択へ戻る(メニュー画面コマンド)
+			case G_ACTION_EXITSTAGE:
+				break;
+				//タイトルへ戻る(メニュー画面コマンド)
+			case G_ACTION_TITLEBACK:
+				break;
+			}
+		}
+		break;
+	}
 
 	/*
 	//（仮）Nキーでタイトルシーンへ移行
