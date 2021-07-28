@@ -91,6 +91,7 @@ void CGirl::Render(CCamera* _camera)
 	rect = motion.GetSourceRectangle();
 	rect.SetBounds({ Xpos,Ypos }, rect.GetSize());
 	::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kRed, *_camera);
+
 }
 
 void CGirl::RenderDebug(CCamera* _camera) {

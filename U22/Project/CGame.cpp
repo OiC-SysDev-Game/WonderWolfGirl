@@ -35,7 +35,7 @@ void CGame::Update() {
 
 	wolf.Update();
 	girl.Update();
-	swordSoldier.Update();
+	swordSoldier.Update(girl.GetRect(),wolf.GetRect());
 
 	/*
 	//（仮）Nキーでタイトルシーンへ移行

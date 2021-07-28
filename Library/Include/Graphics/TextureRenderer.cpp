@@ -88,6 +88,15 @@ bool u22::graphics::TextureRenderer::Render(const u22::math::Vector2F& position,
     // flip
     pos.y *= -1.0f;
 
+
+    if (rectangle.left > rectangle.right) {
+        pos.x -= rectangle.GetWidth();
+    } // if
+    if (rectangle.top > rectangle.bottom) {
+        pos.y -= rectangle.GetHeight();
+    } // if
+
+
     shader->Enable();
     this->TransferUniform(shader, rectangle, color, u22::math::utility::ConputeTransform(pos, u22::math::Vector3F(), scale), camera);
     this->Draw();

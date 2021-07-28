@@ -10,15 +10,15 @@ protected:
 	int atk;
 	float attackInterval;	//çUåÇä‘äu
 	float invicibleTime;	//ñ≥ìGéûä‘
-	float search_Range;
+	float searchRange;
 
 	float attackWait = 0;
 	float invicibleWait = 0;
 
-	float max_Spd;
-	float accelerate_Spd;
-	float decelerate_Spd;
-	float jump_Spd;
+	float maxSpd;
+	float accelerateSpd;
+	float decelerateSpd;
+	float jumpSpd;
 	float gravity;
 
 	bool isRight;
@@ -34,7 +34,7 @@ protected:
 public:
 	virtual bool Load() = 0;
 	virtual void Initialize() = 0;
-	virtual void Update() = 0;
+	virtual void Update(CRectangle girl,CRectangle wolf) = 0;
 	virtual void Render(CCamera* _camera) = 0;
 	virtual void RenderDebug(CCamera* _camera);
 	virtual void Release() = 0;

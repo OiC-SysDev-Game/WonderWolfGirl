@@ -5,6 +5,7 @@ u22::animation::SpriteAnimationController::SpriteAnimationController() :
     _ideal_frame_time(1.0f / 60.0f),
     _motion_end(false),
     _time(0.0f),
+    //_frame(0),
     _current_motion_no(),
     _current_pattern_no(),
     _source_rectangle(),
@@ -30,10 +31,11 @@ std::uint32_t u22::animation::SpriteAnimationController::GetMotionCount(void) co
 u22::shape::Rectangle u22::animation::SpriteAnimationController::GetSourceRectangle(void) const {
     auto offset = u22::math::Vector2F(_current_aniamtion->offset_x, _current_aniamtion->offset_y);
     auto size = u22::math::Vector2F(_current_aniamtion->width, _current_aniamtion->height);
-
+    
     auto rect = u22::shape::Rectangle();
     rect.SetBounds(0.0f, 0.0f, size.x, size.y);
 
+    
     rect.Translate(offset);
     rect.Translate(_current_aniamtion->pattern.at(_current_pattern_no).no * size.x,
                    _current_aniamtion->pattern.at(_current_pattern_no).step * size.y);
@@ -55,9 +57,11 @@ bool u22::animation::SpriteAnimationController::AddTimer(float time) {
         return false;
     } // if
     _time += time;
+    //_frame++;
 
-    float wait = _current_aniamtion->pattern.at(_current_pattern_no).wait;
-    if (wait * _ideal_frame_time < _time) {
+    float wait_frame = _current_aniamtion->pattern.at(_current_pattern_no).wait;
+    if (wait_frame * _ideal_frame_time < _time) {
+    //if (wait_frame < _frame) {
         _current_pattern_no++;
         if (_current_pattern_no > _current_aniamtion->pattern.size() - 1) {
             if (_current_aniamtion->loop) {
@@ -69,13 +73,17 @@ bool u22::animation::SpriteAnimationController::AddTimer(float time) {
             } // else
         } // if
         _time = 0.0f;
+        //_frame = 0;
     } // if
     return true;
 }
 
 bool u22::animation::SpriteAnimationController::ChangeMotion(int no) {
     _motion_end = false;
+    //_frame = 0;
+    _time = 0.0f;
     _current_pattern_no = 0;
+
     _current_motion_no = no;
     _current_aniamtion = &_animations.at(no);
     return true;
@@ -83,6 +91,8 @@ bool u22::animation::SpriteAnimationController::ChangeMotion(int no) {
 
 bool u22::animation::SpriteAnimationController::ChangeMotion(const std::string& name) {
     _motion_end = false;
+    //_frame = 0;
+    _time = 0.0f;
     _current_pattern_no = 0;
 
     auto it = std::find_if(_animations.begin(), _animations.end(), [&](auto& pair) {

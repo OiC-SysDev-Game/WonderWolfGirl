@@ -22,13 +22,13 @@ public:
     //!<アニメーション名
     std::string name;
     //! Xオフセット位置
-    float offset_x;
+    int offset_x;
     //! Yオフセット位置
-    float offset_y;
+    int  offset_y;
     //! 幅
-    float width;
+    int width;
     //! 高さ
-    float height;
+    int height;
     //! ループフラグ
     bool loop;
     //!<パターン

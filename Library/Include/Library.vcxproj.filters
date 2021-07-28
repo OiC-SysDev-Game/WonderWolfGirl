@@ -79,6 +79,9 @@
     <Filter Include="ソース ファイル\Utility">
       <UniqueIdentifier>{83fca080-66a4-475c-ad5e-8eb2e33d041a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\shader">
+      <UniqueIdentifier>{9085d8cc-c038-403e-8cab-66dd476b8e58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Framework.h">
@@ -338,5 +341,31 @@
     <ClCompile Include="Audio\SoundStreamBuffer.cpp">
       <Filter>ソース ファイル\Audio</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Resource\shader\simple.frag">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="..\Resource\shader\simple.vert">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="..\Resource\shader\sprite.frag">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="..\Resource\shader\sprite.vert">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="..\Resource\shader\circle.frag">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="..\Resource\shader\circle.vert">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="..\Resource\shader\rectangle.frag">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
+    <None Include="..\Resource\shader\rectangle.vert">
+      <Filter>リソース ファイル\shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

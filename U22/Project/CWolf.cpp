@@ -46,7 +46,7 @@ void CWolf::Update()
 
 void CWolf::Render(CCamera* _camera) 
 {
-	::GraphicsUtilities::RenderLineRectangle(CRectangle(Xpos, Ypos, Xpos + width, Ypos + height), color::rgba::kRed, *_camera);
+	::GraphicsUtilities::RenderLineRectangle(GetRect(), color::rgba::kRed, *_camera);
 	if (isRight)
 	{
 		::GraphicsUtilities::RenderLineRectangle(

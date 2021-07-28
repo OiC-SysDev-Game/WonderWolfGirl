@@ -68,6 +68,16 @@ bool u22::graphics::RectangleRenderer::RenderRectangle(const u22::shape::Rectang
     auto pos = rectangle.GetLeftTop();
     pos += rectangle.GetSize() * 0.5f;
     pos.y *= -1.0f;
+
+    if (rectangle.left > rectangle.right) {
+        pos.x -= rectangle.GetWidth();
+    } // if
+    if (rectangle.top > rectangle.bottom) {
+        pos.y -= rectangle.GetHeight();
+    } // if
+
+
+
     auto scale = u22::math::Vector3F(rectangle.GetWidth(), rectangle.GetHeight(), 1.0f);
 
     auto translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(pos, 0.0f));
