@@ -8,17 +8,20 @@ class CGirl;
 class CWolf
 {
 private:
+	//仮の画像
+	CTexture WolfImage;
+
 	//とりあえず適当な数値
 	int maxHealth = 100;
 	float maxSpd = 5;
 	float accelerateSpd = 0.5;
 	float decelerateSpd = 0.25;
-	float jumpSpd = 10;
+	float jumpSpd = 20;
 	float gravity = 0.45;
 
 	//後で削除
-	int width = 320;
-	int height = 180;
+	int width = 400;
+	int height = 170;
 
 	int health;		//初期値100
 
@@ -28,6 +31,10 @@ private:
 
 	float Xpos;
 	float Ypos;
+
+	float XBackPos;
+	float YBackPos;
+
 	float Xspd;
 	float Yspd;
 
@@ -54,10 +61,12 @@ public:
 	void RenderDebug(CCamera* _camera);
 	void Release();
 
+
 	int GetHealth(void) { return health; }
 	bool GetCarry(void) { return isCarry; }
 	bool GetDirection(void) { return isRight; }
-	CRectangle GetRect(void) { return CRectangle{ Xpos,Ypos,Xpos + width,Ypos + height }; }
+	CRectangle GetRect(void) { return CRectangle{ Xpos - width / 2, Ypos - height / 2, Xpos + width / 2, Ypos + height / 2 }; }
+	CRectangle GetBackRect(void) { return CRectangle{ XBackPos - width / 2, YBackPos - height / 2, XBackPos + width / 2, YBackPos + height / 2 }; }
 
 	bool TakeDamage(int damage, bool isRatio);		//被ダメージ処理 体力が0以下になるとfalseが戻る	第2引数で割合処理
 
@@ -69,5 +78,7 @@ public:
 	void Attack(void);
 	void Howling(void);
 	void Carry(void);
+
+	void CollisionObject(float ox, float oy);
 };
 

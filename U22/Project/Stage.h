@@ -54,8 +54,9 @@ private:
 
 	void ReleaseMapData();
 
-	bool CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy);
-	bool CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy);
+	bool CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& oy);
+	bool CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox);
+	bool CollisionLine(Line line1, Line line2);
 public:
 	CStage();
 	~CStage();

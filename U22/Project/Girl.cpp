@@ -68,14 +68,14 @@ void CGirl::Initialize(CWolf* arg)
 
 void CGirl::Update()
 {
-	/*
+	
 	if (isMove) Acceleration();
 	else Neutral();
 
 	Move();
 
 	motion.AddTimer(g_pClock->GetFrameSecond());
-	*/
+
 	Xpos = 100;
 	Ypos = 100;
 }

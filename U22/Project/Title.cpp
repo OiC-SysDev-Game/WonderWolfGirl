@@ -64,6 +64,7 @@ void CTitle::Update() {
 	//（仮）Nキーでステージ選択シーンへ移行
 	if (g_pInput->IsPush(u22::input::KeyCode::N))
 	{
+		T_BackGroundBGM.Stop();
 		bEnd = true;
 		NextScene = SCENENO_STAGESELECT;
 	}

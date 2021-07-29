@@ -330,6 +330,7 @@ bool CStage::Collision(CRectangle charaCurRec, CRectangle charaBackRec, float& o
 	float xmove = abs(C_CurRec.left - C_BackRec.left);
 	float ymove = abs(C_CurRec.top - C_BackRec.top);
 
+	CRectangle ChengedCharaRec = C_CurRec;
 	//当たり判定をする矩形の左上から右下の範囲のみ当たり判定をおこなう
 	//それ以外の番号は当たることはないので判定が必要ない
 	for (int y = tc; y <= bc; y++)
@@ -343,23 +344,30 @@ bool CStage::Collision(CRectangle charaCurRec, CRectangle charaBackRec, float& o
 
 			//ステージの短径
 			CRectangle ObjRec = GetStageRect(cn, x, y);
-
 			if (ymove >= xmove)
 			{
-				re = CollisionHorizontal(ObjRec, charaCurRec, charaBackRec, ox, oy);
-				re = CollisionVertical(ObjRec, charaCurRec, charaBackRec, ox, oy);
+				CollisionHorizontal(ObjRec, ChengedCharaRec, charaBackRec, oy);
+				//位置を変更
+				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
+				CollisionVertical(ObjRec, ChengedCharaRec, charaBackRec, ox);
+				//位置を変更
+				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
 			}
 			else
 			{
-				re = CollisionVertical(ObjRec, charaCurRec, charaBackRec, ox, oy);
-				re = CollisionHorizontal(ObjRec, charaCurRec, charaBackRec, ox, oy);
+				CollisionVertical(ObjRec, ChengedCharaRec, charaBackRec, ox);
+				//位置を変更
+				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
+				CollisionHorizontal(ObjRec, ChengedCharaRec, charaBackRec, oy);
+				//位置を変更
+				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
 			}
 		}
 	}
 	return re;
 }
 
-bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy) {
+bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& oy) {
 	//キャラの現在地の短径
 	CRectangle CurRec = charaCurRec;
 	//キャラの1フレーム前の位置の短径
@@ -367,6 +375,9 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 	//接触するステージオブジェクトの短径
 	CRectangle ObjRec = objectRec;
 
+	Line lineStage;
+	Line linePlayer_Right;
+	Line linePlayer_Left;
 	//下方向に移動時
 	if (CurRec.top >= BackRec.top)
 	{
@@ -374,31 +385,34 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 		//下で範囲を限定した専用の矩形を作成する。
 		CRectangle CBotRec = CurRec;
 		CBotRec.top = CBotRec.bottom;	//矩形は上側を下と同じ値にする
-		CBotRec.left += 6;			//横の範囲を少し狭める
-		CBotRec.right -= 6;
+		CBotRec.left += 15;			//横の範囲を少し狭める
+		CBotRec.right -= 15;
 
 		CRectangle BBotRec = BackRec;
 		BBotRec.top = BBotRec.bottom;	//矩形は上側を下と同じ値にする
-		BBotRec.left += 6;			//横の範囲を少し狭める
-		BBotRec.right -= 6;
+		BBotRec.left += 15;			//横の範囲を少し狭める
+		BBotRec.right -= 15;
 		//下と当たり判定
 		//オブジェクトと重なっている場合
 		if (ObjRec.CollisionRectangle(CBotRec))
 		{
 			//下の埋まりなのでチップの上端から矩形の下端の値を引いた値が埋まりの値になる
-			oy = ObjRec.top - CBotRec.bottom;
+			oy += ObjRec.top - CBotRec.bottom;
 			return true;
 		}
 
 		//オブジェクトを通り過ぎている場合
 		//オブジェクトの上部分の当たり判定
-		CRectangle lineStage = CRectangle(ObjRec.left, ObjRec.top, ObjRec.right, ObjRec.top);
-		//キャラクターが右向きに移動していたときの右側の当たり判定
-		CRectangle linePlayer_Right = CRectangle(BBotRec.right, BBotRec.bottom, CBotRec.right, CBotRec.bottom);
-		//キャラクターが左向きに移動していたときの左側の当たり判定
-		CRectangle linePlayer_Left = CRectangle(BBotRec.left, BBotRec.bottom, CBotRec.left, CBotRec.bottom);
-		if (lineStage.CollisionRectangle(linePlayer_Right) ||
-			lineStage.CollisionRectangle(linePlayer_Left))
+		lineStage.StartPos = Vector2(ObjRec.left, ObjRec.top);
+		lineStage.EndPos = Vector2(ObjRec.right, ObjRec.top);
+		//キャラクター右下の当たり判定
+		linePlayer_Right.StartPos = Vector2(BBotRec.right, BBotRec.bottom);
+		linePlayer_Right.EndPos = Vector2(CBotRec.right, CBotRec.bottom);
+		//キャラクター左下の当たり判定
+		linePlayer_Left.StartPos = Vector2(BBotRec.left, BBotRec.bottom);
+		linePlayer_Left.EndPos = Vector2(CBotRec.left, CBotRec.bottom);
+		if (CollisionLine(lineStage, linePlayer_Right) ||
+			CollisionLine(lineStage, linePlayer_Left))
 		{
 			oy += ObjRec.top - CBotRec.bottom;
 			return true;
@@ -411,13 +425,13 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 		//上で範囲を限定した専用の矩形を作成する。
 		CRectangle CTopRec = CurRec;
 		CTopRec.bottom = CTopRec.top;	//矩形は下側を上と同じ値にする
-		CTopRec.left += 6;				//横の範囲を少し狭める
-		CTopRec.right -= 6;
+		CTopRec.left += 15;				//横の範囲を少し狭める
+		CTopRec.right -= 15;
 
 		CRectangle BTopRec = BackRec;
 		BTopRec.bottom = BTopRec.top;	//矩形は下側を上と同じ値にする
-		BTopRec.left += 6;				//横の範囲を少し狭める
-		BTopRec.right -= 6;
+		BTopRec.left += 15;				//横の範囲を少し狭める
+		BTopRec.right -= 15;
 		//上と当たり判定
 		if (ObjRec.CollisionRectangle(CTopRec))
 		{
@@ -428,27 +442,34 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 
 		//オブジェクトを通り過ぎている場合
 		//オブジェクトの下部分の当たり判定
-		CRectangle lineStage = CRectangle(ObjRec.left, ObjRec.bottom, ObjRec.right, ObjRec.bottom);
-		//キャラクターが右向きに移動していたときの右側の当たり判定
-		CRectangle linePlayer_Right = CRectangle(BTopRec.right, BTopRec.top, CTopRec.right, CTopRec.top);
-		//キャラクターが左向きに移動していたときの左側の当たり判定
-		CRectangle linePlayer_Left = CRectangle(BTopRec.left, BTopRec.top, CTopRec.left, CTopRec.top);
-		if (lineStage.CollisionRectangle(linePlayer_Right) ||
-			lineStage.CollisionRectangle(linePlayer_Left))
+		lineStage.StartPos = Vector2(ObjRec.left, ObjRec.bottom);
+		lineStage.EndPos = Vector2(ObjRec.right, ObjRec.bottom);
+		//キャラクター右上の当たり判定
+		linePlayer_Right.StartPos = Vector2(BTopRec.right, BTopRec.top);
+		linePlayer_Right.EndPos = Vector2(CTopRec.right, CTopRec.top);
+		//キャラクター左上の当たり判定
+		linePlayer_Left.StartPos = Vector2(BTopRec.left, BTopRec.top);
+		linePlayer_Left.EndPos = Vector2(CTopRec.left, CTopRec.top);
+		if (CollisionLine(lineStage, linePlayer_Right) ||
+			CollisionLine(lineStage, linePlayer_Left))
 		{
-			oy -= ObjRec.bottom - CTopRec.top;
+			oy += ObjRec.bottom - CTopRec.top;
 			return true;
 		}
 	}
 }
 
-bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy) {
+bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox) {
 	//キャラの現在地の短径
 	CRectangle CurRec = charaCurRec;
 	//キャラの1フレーム前の位置の短径
 	CRectangle BackRec = charaBackRec;
 	//接触するステージオブジェクトの短径
 	CRectangle ObjRec = objectRec;
+
+	Line lineStage;
+	Line linePlayer_Top;
+	Line linePlayer_Bottom;
 
 	//左方向に移動時
 	if (CurRec.left <= BackRec.left)
@@ -457,33 +478,36 @@ bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRe
 		//左で範囲を限定した専用の矩形を作成する。
 		CRectangle CLeftRec = CurRec;
 		CLeftRec.right = CLeftRec.left;	//矩形は右側を左と同じ値にする
-		CLeftRec.bottom += 6;			//縦の範囲を少し狭める
-		CLeftRec.top -= 6;
+		CLeftRec.bottom += 15;			//縦の範囲を少し狭める
+		CLeftRec.top -= 15;
 
 		CRectangle BLeftRec = BackRec;
 		BLeftRec.right = BLeftRec.left;	//矩形は右側を左と同じ値にする
-		BLeftRec.bottom += 6;			//縦の範囲を少し狭める
-		BLeftRec.top -= 6;
+		BLeftRec.bottom += 15;			//縦の範囲を少し狭める
+		BLeftRec.top -= 15;
 
 		//上と当たり判定
 		if (ObjRec.CollisionRectangle(CLeftRec))
 		{
 			//上の埋まりなのでチップの下端から矩形の上端の値を引いた値が埋まりの値になる
-			ox -= ObjRec.right - CLeftRec.left;
+			ox += ObjRec.right - CLeftRec.left;
 			return true;
 		}
 
 		//オブジェクトを通り過ぎている場合
-		//オブジェクトの下部分の当たり判定
-		CRectangle lineStage = CRectangle(ObjRec.right, ObjRec.top, ObjRec.right, ObjRec.bottom);
-		//キャラクターが上向きに移動していたときの上側の当たり判定
-		CRectangle linePlayer_Top = CRectangle(CLeftRec.left, CLeftRec.top, BLeftRec.left, BLeftRec.top);
-		//キャラクターが左向きに移動していたときの左側の当たり判定
-		CRectangle linePlayer_Bottom = CRectangle(CLeftRec.left, CLeftRec.bottom, BLeftRec.left, BLeftRec.bottom);
-		if (lineStage.CollisionRectangle(linePlayer_Top) ||
-			lineStage.CollisionRectangle(linePlayer_Bottom))
+		//オブジェクトの右部分の当たり判定
+		lineStage.StartPos = Vector2(ObjRec.right, ObjRec.top);
+		lineStage.EndPos = Vector2(ObjRec.right, ObjRec.bottom);
+		//キャラクター左上の当たり判定
+		linePlayer_Top.StartPos = Vector2(CLeftRec.left, CLeftRec.top);
+		linePlayer_Top.EndPos = Vector2(BLeftRec.left, BLeftRec.top);
+		//キャラクター左下の当たり判定
+		linePlayer_Bottom.StartPos = Vector2(CLeftRec.left, CLeftRec.bottom);
+		linePlayer_Bottom.EndPos = Vector2(BLeftRec.left, BLeftRec.bottom);
+		if (CollisionLine(lineStage, linePlayer_Top) ||
+			CollisionLine(lineStage, linePlayer_Bottom))
 		{
-			ox -= ObjRec.right - CLeftRec.left;
+			ox += ObjRec.right - CLeftRec.left;
 			return true;
 		}
 	}
@@ -494,13 +518,13 @@ bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRe
 		//右で範囲を限定した専用の矩形を作成する。
 		CRectangle CRightRec = CurRec;
 		CRightRec.left = CRightRec.right;	//矩形は左側を右と同じ値にする
-		CRightRec.bottom += 6;			//縦の範囲を少し狭める
-		CRightRec.top -= 6;
+		CRightRec.bottom += 15;			//縦の範囲を少し狭める
+		CRightRec.top -= 15;
 
 		CRectangle BRightRec = BackRec;
 		BRightRec.left = BRightRec.right;	//矩形は左側を右と同じ値にする
-		BRightRec.bottom += 6;			//縦の範囲を少し狭める
-		BRightRec.top -= 6;
+		BRightRec.bottom += 15;			//縦の範囲を少し狭める
+		BRightRec.top -= 15;
 
 		//上と当たり判定
 		if (ObjRec.CollisionRectangle(CRightRec))
@@ -511,22 +535,34 @@ bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRe
 		}
 
 		//オブジェクトを通り過ぎている場合
-		//オブジェクトの下部分の当たり判定
-		CRectangle lineStage = CRectangle(ObjRec.left, ObjRec.top, ObjRec.left, ObjRec.bottom);
-		//キャラクターが上向きに移動していたときの上側の当たり判定
-		CRectangle linePlayer_Top = CRectangle(CRightRec.right, CRightRec.top, BRightRec.right, BRightRec.top);
-		//キャラクターが下向きに移動していたときの下側の当たり判定
-		CRectangle linePlayer_Bottom = CRectangle(CRightRec.right, CRightRec.bottom, BRightRec.right, BRightRec.bottom);
-		if (lineStage.CollisionRectangle(linePlayer_Top) ||
-			lineStage.CollisionRectangle(linePlayer_Bottom))
+		//オブジェクトの左部分の当たり判定
+		lineStage.StartPos = Vector2(ObjRec.left, ObjRec.top);
+		lineStage.EndPos = Vector2(ObjRec.left, ObjRec.bottom);
+		//キャラクター右上の当たり判定
+		linePlayer_Top.StartPos = Vector2(CRightRec.right, CRightRec.top);
+		linePlayer_Top.EndPos = Vector2(BRightRec.right, BRightRec.top);
+		//キャラクター右下の当たり判定
+		linePlayer_Bottom.StartPos = Vector2(CRightRec.right, CRightRec.bottom);
+		linePlayer_Bottom.EndPos = Vector2(BRightRec.right, BRightRec.bottom);
+		if (CollisionLine(lineStage, linePlayer_Top) ||
+			CollisionLine(lineStage, linePlayer_Bottom))
 		{
 			ox += ObjRec.left - CRightRec.right;
 			return true;
 		}
 	}
 }
-#pragma region ギミック
 
+bool CStage::CollisionLine(Line line1, Line line2) {
+	float s, t;
+	s = (line1.StartPos.x - line1.EndPos.x) * (line2.StartPos.y - line1.StartPos.y) - (line1.StartPos.y - line1.EndPos.y) * (line2.StartPos.x - line1.StartPos.x);
+	t = (line1.StartPos.x - line1.EndPos.x) * (line2.EndPos.y - line1.StartPos.y) - (line1.StartPos.y - line1.EndPos.y) * (line2.EndPos.x - line1.StartPos.x);
+	if (s * t > 0)
+		return false;
 
-
-#pragma endregion
+	s = (line2.StartPos.x - line2.EndPos.x) * (line1.StartPos.y - line2.StartPos.y) - (line2.StartPos.y - line2.EndPos.y) * (line1.StartPos.x - line2.StartPos.x);
+	t = (line2.StartPos.x - line2.EndPos.x) * (line1.EndPos.y - line2.StartPos.y) - (line2.StartPos.y - line2.EndPos.y) * (line1.EndPos.x - line2.StartPos.x);
+	if (s * t > 0)
+		return false;
+	return true;
+}

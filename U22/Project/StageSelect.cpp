@@ -58,6 +58,7 @@ void CStageSelect::Update() {
 	//（仮）Nキーでゲームシーンへ移行
 	if (g_pInput->IsPush(u22::input::KeyCode::N))
 	{
+		S_BackGroundBGM.Stop();
 		bEnd = true;
 		NextScene = SCENENO_GAME;
 	}

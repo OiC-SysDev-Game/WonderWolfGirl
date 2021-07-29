@@ -12,6 +12,7 @@ CWolf::~CWolf()
 };
 
 bool CWolf::Load() {
+	WolfImage.Load("Image/Game/Wolf.png");
 	return true;
 }
 
@@ -24,6 +25,8 @@ void CWolf::Initialize(CGirl* arg)
 
 	Xpos = 0;
 	Ypos = 0;
+	XBackPos = 0;
+	YBackPos = 0;
 	Xspd = 0;
 	Yspd = 0;
 
@@ -34,6 +37,8 @@ void CWolf::Initialize(CGirl* arg)
 
 void CWolf::Update()
 {
+	XBackPos = Xpos;
+	YBackPos = Ypos;
 	if (g_pInput->IsHold(u22::input::KeyCode::D)) Acceleration(true);
 	else if (g_pInput->IsHold(u22::input::KeyCode::A)) Acceleration(false);
 	else Neutral();
@@ -57,7 +62,7 @@ void CWolf::Render(CCamera* _camera)
 	sprintf(SY, "PosY : %0.2f", Ypos);
 	GraphicsUtilities::RenderString(Vector2(10, 130), color::rgba::kWhite, SX, *_camera);
 	GraphicsUtilities::RenderString(Vector2(10, 160), color::rgba::kWhite, SY, *_camera);
-	::GraphicsUtilities::RenderLineRectangle(CRectangle(Xpos, Ypos, Xpos + width, Ypos + height), color::rgba::kRed, *_camera);
+	WolfImage.Render(Vector2(Xpos - width / 2, Ypos - height / 2), *_camera);
 	if (isRight)
 	{
 		::GraphicsUtilities::RenderLineRectangle(
@@ -141,9 +146,9 @@ void CWolf::Move(void)
 	Ypos += Yspd;
 
 	//’…’nˆ—
-	if (Ypos + height > 700)
+	if (Ypos + height / 2 > 1080)
 	{
-		Ypos = 700 - height;
+		Ypos = 1080 - height / 2;
 		Yspd = 0;
 		canJump = true;
 
@@ -186,7 +191,7 @@ void CWolf::Carry(void)
 {
 	if (!isCarry)
 	{
-		if (CRectangle(Xpos, Ypos, Xpos + width, Ypos + height).CollisionRectangle
+		if (GetRect().CollisionRectangle
 		(CRectangle(girl->GetRect())) && canJump)
 		{
 			//­—‚ð“¯Šú
@@ -203,5 +208,22 @@ void CWolf::Carry(void)
 			isCarry = false;
 			girl->SetCarry(false);
 		}
+	}
+}
+
+void CWolf::CollisionObject(float ox, float oy)
+{
+	Xpos += ox;
+	Ypos += oy;
+
+	if (ox != 0)
+	{
+		Xspd = 0;
+	}
+
+	if (oy != 0)
+	{
+		Yspd = 0;
+		canJump = true;
 	}
 }

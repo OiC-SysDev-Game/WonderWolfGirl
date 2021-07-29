@@ -35,10 +35,8 @@ void CGame::Initialize() {
 }
 
 void CGame::Update() {
-
-	wolf.Update();
-	girl.Update();
-	swordSoldier.Update();
+	float ox = 0;
+	float oy = 0;
 
 	//ƒV[ƒ“ó‘Ô‚É‚æ‚é•ªŠò
 	switch (G_ScenePhase)
@@ -54,6 +52,12 @@ void CGame::Update() {
 
 		//‘€ì’†
 	case G_PHASE_UNDER:
+		wolf.Update();
+		girl.Update();
+		swordSoldier.Update();
+
+		stage.Collision(wolf.GetRect(), wolf.GetBackRect(), ox, oy);
+		wolf.CollisionObject(ox, oy);
 		break;
 
 		//‰æ–Ê•Ï‰»
