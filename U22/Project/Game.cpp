@@ -1,8 +1,11 @@
 #include "GameApplicaion.h"
 #include "Game.h"
+#include "Stage.h"
 #include "Wolf.h"
 #include "Girl.h"
 #include "SwordSoldier.h"
+
+CStage stage;
 
 CWolf wolf;
 CGirl girl;
@@ -25,7 +28,7 @@ bool CGame::Load() {
 
 void CGame::Initialize() {
 	Load();
-
+	stage.Initialize();
 	girl.Initialize(&wolf);
 	wolf.Initialize(&girl);
 	swordSoldier.Initialize();
@@ -102,9 +105,11 @@ void CGame::Render(CCamera* _camera) {
 	wolf.Render(_camera);
 	girl.Render(_camera);
 	swordSoldier.Render(_camera);
+	stage.Render(_camera);
 }
 
 void CGame::RenderDebug(CCamera* _camera) {
+
 }
 
 void CGame::Release()
