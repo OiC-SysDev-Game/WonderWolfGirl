@@ -23,35 +23,23 @@ namespace u22::animation {
 /// </summary>
 class SpriteAnimationController {
 private:
-    //!
 	//! 時間
-    //!
 	float _ideal_frame_time;
-	//!
 	//! 終了
-	//!
 	bool _motion_end;
 	//! 時間
 	float _time;
-	//!
+	//! 時間
+	//int _frame;
 	//! 番号
-	//!
 	uint32_t _current_motion_no;
-	//!
 	//! 番号
-	//!
 	uint32_t _current_pattern_no;
-	//!
 	//! 表示矩形
-	//!
 	u22::shape::Rectangle _source_rectangle;
-	//!
 	//! 現在
-	//!
 	u22::animation::SpriteAnimationCreate* _current_aniamtion;
-	//!
 	//! アニメーションデータ
-	//!
 	std::unordered_map<int, u22::animation::SpriteAnimationCreate> _animations;
 public:
 	/// <summary>

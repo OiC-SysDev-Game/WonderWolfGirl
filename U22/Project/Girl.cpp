@@ -68,12 +68,16 @@ void CGirl::Initialize(CWolf* arg)
 
 void CGirl::Update()
 {
+	/*
 	if (isMove) Acceleration();
 	else Neutral();
 
 	Move();
 
 	motion.AddTimer(g_pClock->GetFrameSecond());
+	*/
+	Xpos = 100;
+	Ypos = 100;
 }
 
 void CGirl::Render(CCamera* _camera)
@@ -90,7 +94,6 @@ void CGirl::Render(CCamera* _camera)
 
 	rect = motion.GetSourceRectangle();
 	rect.SetBounds({ Xpos,Ypos }, rect.GetSize());
-	::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kRed, *_camera);
 }
 
 void CGirl::RenderDebug(CCamera* _camera) {

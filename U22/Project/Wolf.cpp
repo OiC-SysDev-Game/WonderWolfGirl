@@ -1,4 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "Wolf.h"
+#include <string.h>
 
 CWolf::CWolf() {
 }
@@ -42,10 +45,18 @@ void CWolf::Update()
 	if (g_pInput->IsPush(u22::input::MouseButton::Left)) Attack();
 	if (g_pInput->IsPush(u22::input::MouseButton::Right)) Howling();
 	if (g_pInput->IsPush(u22::input::KeyCode::W)) Carry();
+	
 }
 
 void CWolf::Render(CCamera* _camera)
 {
+	//X,Yé≤ÇÃç¿ïWíläiî[
+	char SX[40];
+	char SY[40];
+	sprintf(SX, "PosX : %0.2f", Xpos);
+	sprintf(SY, "PosY : %0.2f", Ypos);
+	GraphicsUtilities::RenderString(Vector2(10, 130), color::rgba::kWhite, SX, *_camera);
+	GraphicsUtilities::RenderString(Vector2(10, 160), color::rgba::kWhite, SY, *_camera);
 	::GraphicsUtilities::RenderLineRectangle(CRectangle(Xpos, Ypos, Xpos + width, Ypos + height), color::rgba::kRed, *_camera);
 	if (isRight)
 	{

@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+
 #include "Stage.h"
 #include <string.h>
 
@@ -219,6 +220,14 @@ void CStage::Render(CCamera* _camera) {
 			m_ChipTexture.Render(posMC, cr, *_camera);
 		}
 	}
+	
+	//X,Y軸のスクロール値格納
+	char SX[40];
+	char SY[40];
+	sprintf(SX, "ScrollX : %0.2f", m_ScrollX);
+	sprintf(SY, "ScrollY : %0.2f", m_ScrollY);
+	GraphicsUtilities::RenderString(Vector2(10, 70), Vector4(0, 0, 0, 1), SX, *_camera);
+	GraphicsUtilities::RenderString(Vector2(10, 100), Vector4(0, 0, 0, 1), SY, *_camera);
 }
 
 void CStage::RenderDebug(CCamera* _camera) {

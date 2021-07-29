@@ -118,6 +118,8 @@ void CStageSelect::Render(CCamera* _camera) {
 	//”wŒi•`‰æ
 	S_BackImage.Render(Vector2(0, 0), Vector4(1, 1, 1, S_DefaultAlpha), *_camera);
 
+	::GraphicsUtilities::RenderFillRectangle(CRectangle(100, 100, 200, 200), color::rgba::kRed, *_camera);
+
 	//ƒoƒbƒNƒ{ƒ^ƒ“•`‰æ
 	S_BackButtonImage.Render(Vector2(10, height - S_BackButtonImage.GetHeight() - 10),
 		Vector4(1, 1, 1, S_DefaultAlpha), *_camera);
@@ -151,8 +153,6 @@ void CStageSelect::Render(CCamera* _camera) {
 				PS1_Color = Vector4(1.0f, 1.0f, 1.0f, S_DefaultAlpha);
 				S_StageImage[i].Render(PS1_Pos, PS1_Color, *_camera);
 				S_SelectButtonImage_Select.Render(PB1_Pos, PS1_Color, *_camera);
-
-
 			}
 			//”ñ‘I‘ðŽž
 			else
@@ -163,7 +163,6 @@ void CStageSelect::Render(CCamera* _camera) {
 				S_StageImage[i].Render(PS1_Pos, PS1_Color, *_camera);
 				S_SelectButtonImage.Render(PB1_Pos, PS1_Color, *_camera);
 			}
-
 		}
 	}
 	else

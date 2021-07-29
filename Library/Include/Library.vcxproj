@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>Library_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -230,6 +231,16 @@
     <ClInclude Include="Utility\CUtilities.h" />
     <ClInclude Include="Utility\GraphicsUtilities.h" />
     <ClInclude Include="Utility\UtilityInclude.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Resource\shader\circle.frag" />
+    <None Include="..\Resource\shader\circle.vert" />
+    <None Include="..\Resource\shader\rectangle.frag" />
+    <None Include="..\Resource\shader\rectangle.vert" />
+    <None Include="..\Resource\shader\simple.frag" />
+    <None Include="..\Resource\shader\simple.vert" />
+    <None Include="..\Resource\shader\sprite.frag" />
+    <None Include="..\Resource\shader\sprite.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

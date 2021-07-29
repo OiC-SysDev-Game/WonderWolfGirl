@@ -97,15 +97,14 @@ void CGame::Update() {
 }
 
 void CGame::Render(CCamera* _camera) {
-	//std::string text = "ゲーム画面\nNキーで次の画面へすっとばせるよ";
-	//::GraphicsUtilities::RenderString(Vector2(10, 10), color::rgba::kWhite, text, *_camera);
 
-	::GraphicsUtilities::RenderFillRectangle(CRectangle(0, 700, 1280, 720), { (0.0f),(0.5f),(0.5f),(1.0f) }, *_camera);
-
+	stage.Render(_camera);
 	wolf.Render(_camera);
 	girl.Render(_camera);
 	swordSoldier.Render(_camera);
-	stage.Render(_camera);
+	std::string text = "ゲーム画面\nNキーで次の画面へすっとばせるよ";
+	::GraphicsUtilities::RenderString(Vector2(10, 10), color::rgba::kWhite, text, *_camera);
+	//::GraphicsUtilities::RenderFillRectangle(CRectangle(0, 700, 1280, 720), { (0.0f),(0.5f),(0.5f),(1.0f) }, *_camera);
 }
 
 void CGame::RenderDebug(CCamera* _camera) {

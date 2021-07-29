@@ -53,7 +53,6 @@ private:
 	int m_ItemTextureCount;
 
 	void ReleaseMapData();
-	char* Getpath(int i);
 
 	bool CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy);
 	bool CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy);
