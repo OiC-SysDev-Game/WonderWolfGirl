@@ -1,5 +1,6 @@
 #pragma once
 #include "U22.h"
+#include "Wolf.h"
 
 typedef struct tag_Line {
 	Vector2 StartPos;
@@ -57,6 +58,13 @@ private:
 	bool CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& oy);
 	bool CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox);
 	bool CollisionLine(Line line1, Line line2);
+	bool ColRec(CRectangle Arec, CRectangle Brec) {
+		if (Arec.right > Brec.left && Arec.left < Brec.right && Arec.bottom > Brec.top && Arec.top < Brec.bottom)
+		{
+			return true;
+		}
+		return false;
+	}
 public:
 	CStage();
 	~CStage();
@@ -70,7 +78,7 @@ public:
 	float GetScrollY() { return m_ScrollY; }
 	Vector2 GetScroll() { return Vector2(m_ScrollX, m_ScrollY); }
 	Vector2 GetPlayerPos() { return Vector2(m_PlayerPosX * m_XChipEditorSize, m_PlayerPosY * m_YChipEditorSize); }
-	bool Collision(CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy);
+	bool CollisionWolf(CWolf& wolf);
 	CRectangle GetStageRect(int cn, int x, int y, Vector2 scroll = Vector2(0, 0)) {
 		switch (cn + 1)
 		{

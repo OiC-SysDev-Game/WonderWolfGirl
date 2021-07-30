@@ -176,7 +176,6 @@ bool CStage::Load(int path) {
 void CStage::Initialize() {
 	m_ScrollX = 0;
 	m_ScrollY = 0;
-	int n = 0;
 
 	Load(1);
 }
@@ -283,10 +282,10 @@ void CStage::ReleaseMapData() {
 	}
 }
 
-bool CStage::Collision(CRectangle charaCurRec, CRectangle charaBackRec, float& ox, float& oy) {
+bool CStage::CollisionWolf(CWolf& wolf) {
 	bool re = false;
-	CRectangle C_CurRec = charaCurRec;
-	CRectangle C_BackRec = charaBackRec;
+	CRectangle C_CurRec = wolf.GetRect();
+	CRectangle C_BackRec = wolf.GetBackRect();
 
 	//当たり判定する矩形の左上と右下のチップ位置を求める
 	int lc = C_CurRec.left / m_XChipSize;
@@ -314,23 +313,23 @@ bool CStage::Collision(CRectangle charaCurRec, CRectangle charaBackRec, float& o
 	//キャラクターの現在地X座標がマイナス値であるとき、0に戻す
 	if (C_CurRec.left <= 0)
 	{
-		ox += -C_CurRec.left;
+		float ox = -C_CurRec.left;
+		wolf.CollisionObject(ox, 0);
 	}
 	//キャラクターの現在地X座標がマップ範囲外であるとき、最大X座標値に戻す
 	else if (C_CurRec.right >= m_XChipCount * m_XChipSize)
 	{
-		ox += m_XChipCount * m_XChipSize - C_CurRec.right;
+		float ox = m_XChipCount * m_XChipSize - C_CurRec.right;
+		wolf.CollisionObject(ox, 0);
 	}
 
 	//プレイヤーの位置を調整
-	C_CurRec.left += ox;
-	C_CurRec.right += ox;
+	C_CurRec = wolf.GetRect();
 
 	//X軸、Y軸の移動量の絶対値を計算
 	float xmove = abs(C_CurRec.left - C_BackRec.left);
 	float ymove = abs(C_CurRec.top - C_BackRec.top);
 
-	CRectangle ChengedCharaRec = C_CurRec;
 	//当たり判定をする矩形の左上から右下の範囲のみ当たり判定をおこなう
 	//それ以外の番号は当たることはないので判定が必要ない
 	for (int y = tc; y <= bc; y++)
@@ -344,23 +343,29 @@ bool CStage::Collision(CRectangle charaCurRec, CRectangle charaBackRec, float& o
 
 			//ステージの短径
 			CRectangle ObjRec = GetStageRect(cn, x, y);
+			float ox, oy = 0;
 			if (ymove >= xmove)
 			{
-				CollisionHorizontal(ObjRec, ChengedCharaRec, charaBackRec, oy);
-				//位置を変更
-				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
-				CollisionVertical(ObjRec, ChengedCharaRec, charaBackRec, ox);
-				//位置を変更
-				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
+				if (CollisionHorizontal(ObjRec, wolf.GetRect(), C_BackRec, oy))
+				{
+					wolf.CollisionObject(0, oy);
+				}
+				if (CollisionVertical(ObjRec, wolf.GetRect(), C_BackRec, ox))
+				{
+					wolf.CollisionObject(ox, 0);
+				}
 			}
 			else
 			{
-				CollisionVertical(ObjRec, ChengedCharaRec, charaBackRec, ox);
-				//位置を変更
-				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
-				CollisionHorizontal(ObjRec, ChengedCharaRec, charaBackRec, oy);
-				//位置を変更
-				ChengedCharaRec = CRectangle(charaCurRec.left + ox, charaCurRec.top + oy, charaCurRec.right + ox, charaCurRec.bottom + oy);
+				
+				if (CollisionVertical(ObjRec, wolf.GetRect(), C_BackRec, ox))
+				{
+					wolf.CollisionObject(ox, 0);
+				}
+				if (CollisionHorizontal(ObjRec, wolf.GetRect(), C_BackRec, oy))
+				{
+					wolf.CollisionObject(0, oy);
+				}
 			}
 		}
 	}
@@ -385,19 +390,19 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 		//下で範囲を限定した専用の矩形を作成する。
 		CRectangle CBotRec = CurRec;
 		CBotRec.top = CBotRec.bottom;	//矩形は上側を下と同じ値にする
-		CBotRec.left += 15;			//横の範囲を少し狭める
-		CBotRec.right -= 15;
+		CBotRec.left += 6;				//横の範囲を少し狭める
+		CBotRec.right -= 6;
 
 		CRectangle BBotRec = BackRec;
 		BBotRec.top = BBotRec.bottom;	//矩形は上側を下と同じ値にする
-		BBotRec.left += 15;			//横の範囲を少し狭める
-		BBotRec.right -= 15;
-		//下と当たり判定
+		BBotRec.left += 6;			//横の範囲を少し狭める
+		BBotRec.right -= 6;
+		//キャラクターの下と当たり判定
 		//オブジェクトと重なっている場合
 		if (ObjRec.CollisionRectangle(CBotRec))
 		{
 			//下の埋まりなのでチップの上端から矩形の下端の値を引いた値が埋まりの値になる
-			oy += ObjRec.top - CBotRec.bottom;
+			oy = ObjRec.top - CurRec.bottom;
 			return true;
 		}
 
@@ -406,15 +411,15 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 		lineStage.StartPos = Vector2(ObjRec.left, ObjRec.top);
 		lineStage.EndPos = Vector2(ObjRec.right, ObjRec.top);
 		//キャラクター右下の当たり判定
-		linePlayer_Right.StartPos = Vector2(BBotRec.right, BBotRec.bottom);
-		linePlayer_Right.EndPos = Vector2(CBotRec.right, CBotRec.bottom);
+		linePlayer_Right.StartPos = Vector2(CBotRec.right, CBotRec.bottom);
+		linePlayer_Right.EndPos = Vector2(BBotRec.right, BBotRec.bottom);
 		//キャラクター左下の当たり判定
-		linePlayer_Left.StartPos = Vector2(BBotRec.left, BBotRec.bottom);
-		linePlayer_Left.EndPos = Vector2(CBotRec.left, CBotRec.bottom);
+		linePlayer_Left.StartPos = Vector2(CBotRec.left, CBotRec.bottom);
+		linePlayer_Left.EndPos = Vector2(BBotRec.left, BBotRec.bottom);
 		if (CollisionLine(lineStage, linePlayer_Right) ||
 			CollisionLine(lineStage, linePlayer_Left))
 		{
-			oy += ObjRec.top - CBotRec.bottom;
+			oy = ObjRec.top - CurRec.bottom;
 			return true;
 		}
 	}
@@ -425,18 +430,19 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 		//上で範囲を限定した専用の矩形を作成する。
 		CRectangle CTopRec = CurRec;
 		CTopRec.bottom = CTopRec.top;	//矩形は下側を上と同じ値にする
-		CTopRec.left += 15;				//横の範囲を少し狭める
-		CTopRec.right -= 15;
+		CTopRec.left += 6;				//横の範囲を少し狭める
+		CTopRec.right -= 6;
 
 		CRectangle BTopRec = BackRec;
 		BTopRec.bottom = BTopRec.top;	//矩形は下側を上と同じ値にする
-		BTopRec.left += 15;				//横の範囲を少し狭める
-		BTopRec.right -= 15;
-		//上と当たり判定
+		BTopRec.left += 6;				//横の範囲を少し狭める
+		BTopRec.right -= 6;
+		//キャラクターの上と当たり判定
+		//オブジェクトと重なっている場合
 		if (ObjRec.CollisionRectangle(CTopRec))
 		{
 			//上の埋まりなのでチップの下端から矩形の上端の値を引いた値が埋まりの値になる
-			oy += ObjRec.bottom - CTopRec.top;
+			oy = ObjRec.bottom - CurRec.top;
 			return true;
 		}
 
@@ -445,18 +451,19 @@ bool CStage::CollisionHorizontal(CRectangle objectRec, CRectangle charaCurRec, C
 		lineStage.StartPos = Vector2(ObjRec.left, ObjRec.bottom);
 		lineStage.EndPos = Vector2(ObjRec.right, ObjRec.bottom);
 		//キャラクター右上の当たり判定
-		linePlayer_Right.StartPos = Vector2(BTopRec.right, BTopRec.top);
-		linePlayer_Right.EndPos = Vector2(CTopRec.right, CTopRec.top);
+		linePlayer_Right.StartPos = Vector2(CTopRec.right, CTopRec.top);
+		linePlayer_Right.EndPos = Vector2(BTopRec.right, BTopRec.top);
 		//キャラクター左上の当たり判定
-		linePlayer_Left.StartPos = Vector2(BTopRec.left, BTopRec.top);
-		linePlayer_Left.EndPos = Vector2(CTopRec.left, CTopRec.top);
+		linePlayer_Left.StartPos = Vector2(CTopRec.left, CTopRec.top);
+		linePlayer_Left.EndPos = Vector2(BTopRec.left, BTopRec.top);
 		if (CollisionLine(lineStage, linePlayer_Right) ||
 			CollisionLine(lineStage, linePlayer_Left))
 		{
-			oy += ObjRec.bottom - CTopRec.top;
+			oy = ObjRec.bottom - CurRec.top;
 			return true;
 		}
 	}
+	return false;
 }
 
 bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRectangle charaBackRec, float& ox) {
@@ -478,19 +485,20 @@ bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRe
 		//左で範囲を限定した専用の矩形を作成する。
 		CRectangle CLeftRec = CurRec;
 		CLeftRec.right = CLeftRec.left;	//矩形は右側を左と同じ値にする
-		CLeftRec.bottom += 15;			//縦の範囲を少し狭める
-		CLeftRec.top -= 15;
+		CLeftRec.bottom -= 6;			//縦の範囲を少し狭める
+		CLeftRec.top += 6;
 
 		CRectangle BLeftRec = BackRec;
 		BLeftRec.right = BLeftRec.left;	//矩形は右側を左と同じ値にする
-		BLeftRec.bottom += 15;			//縦の範囲を少し狭める
-		BLeftRec.top -= 15;
+		BLeftRec.bottom -= 6;			//縦の範囲を少し狭める
+		BLeftRec.top += 6;
 
-		//上と当たり判定
+		//キャラクターの左と当たり判定
+		//オブジェクトと重なっている場合
 		if (ObjRec.CollisionRectangle(CLeftRec))
 		{
-			//上の埋まりなのでチップの下端から矩形の上端の値を引いた値が埋まりの値になる
-			ox += ObjRec.right - CLeftRec.left;
+			//左の埋まりなのでチップの右端から矩形の左端の値を引いた値が埋まりの値になる
+			ox = ObjRec.right - CurRec.left;
 			return true;
 		}
 
@@ -507,7 +515,7 @@ bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRe
 		if (CollisionLine(lineStage, linePlayer_Top) ||
 			CollisionLine(lineStage, linePlayer_Bottom))
 		{
-			ox += ObjRec.right - CLeftRec.left;
+			ox = ObjRec.right - CurRec.left;
 			return true;
 		}
 	}
@@ -518,19 +526,20 @@ bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRe
 		//右で範囲を限定した専用の矩形を作成する。
 		CRectangle CRightRec = CurRec;
 		CRightRec.left = CRightRec.right;	//矩形は左側を右と同じ値にする
-		CRightRec.bottom += 15;			//縦の範囲を少し狭める
-		CRightRec.top -= 15;
+		CRightRec.bottom -= 6;			//縦の範囲を少し狭める
+		CRightRec.top += 6;
 
 		CRectangle BRightRec = BackRec;
 		BRightRec.left = BRightRec.right;	//矩形は左側を右と同じ値にする
-		BRightRec.bottom += 15;			//縦の範囲を少し狭める
-		BRightRec.top -= 15;
+		BRightRec.bottom -= 6;			//縦の範囲を少し狭める
+		BRightRec.top += 6;
 
-		//上と当たり判定
+		//キャラクターの右と当たり判定
+		//オブジェクトと重なっている場合
 		if (ObjRec.CollisionRectangle(CRightRec))
 		{
-			//上の埋まりなのでチップの下端から矩形の上端の値を引いた値が埋まりの値になる
-			ox += ObjRec.left - CRightRec.right;
+			//右の埋まりなのでチップの左端から矩形の右端の値を引いた値が埋まりの値になる
+			ox = ObjRec.left - CurRec.right;
 			return true;
 		}
 
@@ -547,10 +556,11 @@ bool CStage::CollisionVertical(CRectangle objectRec, CRectangle charaCurRec, CRe
 		if (CollisionLine(lineStage, linePlayer_Top) ||
 			CollisionLine(lineStage, linePlayer_Bottom))
 		{
-			ox += ObjRec.left - CRightRec.right;
+     			ox = ObjRec.left - CurRec.right;
 			return true;
 		}
 	}
+	return false;
 }
 
 bool CStage::CollisionLine(Line line1, Line line2) {

@@ -56,8 +56,7 @@ void CGame::Update() {
 		girl.Update();
 		swordSoldier.Update();
 
-		stage.Collision(wolf.GetRect(), wolf.GetBackRect(), ox, oy);
-		wolf.CollisionObject(ox, oy);
+		stage.CollisionWolf(wolf);
 		break;
 
 		//‰æ–Ê•Ï‰»

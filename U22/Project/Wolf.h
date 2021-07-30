@@ -16,12 +16,12 @@ private:
 	float maxSpd = 5;
 	float accelerateSpd = 0.5;
 	float decelerateSpd = 0.25;
-	float jumpSpd = 20;
-	float gravity = 0.45;
+	float jumpSpd = 12;
+	float gravity = 0.20f;
 
 	//Œã‚Åíœ
-	int width = 400;
-	int height = 170;
+	float width = 400;
+	float height = 170;
 
 	int health;		//‰Šú’l100
 

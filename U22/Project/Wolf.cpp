@@ -145,6 +145,7 @@ void CWolf::Move(void)
 	Xpos += Xspd;
 	Ypos += Yspd;
 
+	/*
 	//’…’nˆ—
 	if (Ypos + height / 2 > 1080)
 	{
@@ -161,6 +162,7 @@ void CWolf::Move(void)
 			isRight = false;
 		}
 	}
+	*/
 }
 
 void CWolf::Attack(void)
