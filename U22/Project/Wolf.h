@@ -13,12 +13,12 @@ private:
 	float maxSpd = 5;
 	float accelerateSpd = 0.5;
 	float decelerateSpd = 0.25;
-	float jumpSpd = 10;
+	float jumpSpd = 18;
 	float gravity = 0.45;
 
-	//後で削除
+	/*後で削除
 	int width = 320;
-	int height = 180;
+	int height = 180;*/
 
 	int health;		//初期値100
 
@@ -33,15 +33,18 @@ private:
 
 	CGirl* girl;
 
+	CTexture texture[1];
+	SpriteAnimationController motion;
+
 	enum motionID
 	{
-		eWait,
-		eMove,
-		eJump,
-		eAtk,
-		eCarry,
-		eHit,
-		eDown
+		emWait,
+		emWalk,
+		emJump,
+		emAtk,
+		emCarry,
+		emHit,
+		emDown
 	};
 
 public:
@@ -57,7 +60,7 @@ public:
 	int GetHealth(void) { return health; }
 	bool GetCarry(void) { return isCarry; }
 	bool GetDirection(void) { return isRight; }
-	CRectangle GetRect(void) { return CRectangle{ Xpos,Ypos,Xpos + width,Ypos + height }; }
+	CRectangle GetRect(void);
 
 	bool TakeDamage(int damage, bool isRatio);		//被ダメージ処理 体力が0以下になるとfalseが戻る	第2引数で割合処理
 

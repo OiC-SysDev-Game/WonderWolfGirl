@@ -11,6 +11,7 @@ void CSwordSoldier::Initialize()
 	maxSpd = 2.7;
 	gravity = 0.45;
 	isRight = false;
+	isShow = true;
 
 	Xpos = 1100;
 	Ypos = 100;
@@ -24,49 +25,69 @@ void CSwordSoldier::Initialize()
 
 void CSwordSoldier::Update(CRectangle girl, CRectangle wolf)
 {
-	SearchAllies(girl, wolf);
+	if (isShow) 
+	{
+		SearchAllies(girl, wolf);
 
-	if (isAttack && attackWait <= 0 && Xspd == 0) Attack();
+		if (isAttack && attackWait <= 0 && Xspd == 0) Attack();
 	
-	if (isMove) 
-	{	
-		Acceleration();
+		if (isMove) 
+		{	
+			Acceleration();
+		}
+		else Neutral();
+
+		Move();
+
+		motion.AddTimer(g_pClock->GetFrameSecond());
+		attackWait -= g_pClock->GetFrameSecond();
+
+		if (motion.IsEndMotion() && motion.GetMotionNo() == emAttack) motion.ChangeMotion(emWait);
 	}
-	else Neutral();
-
-	Move();
-
-	motion.AddTimer(g_pClock->GetFrameSecond());
-	attackWait -= g_pClock->GetFrameSecond();
-
-	if (motion.IsEndMotion() && motion.GetMotionNo() == emAttack) motion.ChangeMotion(emWait);
 }
 
 void CSwordSoldier::Render(CCamera* _camera)
 {
-	CRectangle rect = motion.GetSourceRectangle();
-
-	if (isRight) {
-		float tmp = rect.right;
-		rect.right = rect.left;
-		rect.left = tmp;
-	}
-
-
-	if (motion.GetMotionNo() == 0) {
-		texture[0].Render({ Xpos,Ypos }, rect, *_camera);
-	}
-	else 
+	if (isShow) 
 	{
-		texture[motion.GetMotionNo() - 1].Render({ Xpos,Ypos }, rect, *_camera);
+		CRectangle rect = motion.GetSourceRectangle();
+
+		if (isRight) {
+			float tmp = rect.right;
+			rect.right = rect.left;
+			rect.left = tmp;
+		}
+
+
+		if ((int)(invicibleWait * 10) % 2 == 0)
+		{
+			//•à‚«‚Å‘ã—p
+			if (motion.GetMotionNo() == 0) {
+				texture[motion.GetMotionNo()].Render({ Xpos,Ypos - motionOffset[motion.GetMotionNo()][1] }, rect, *_camera);
+			}
+			else 
+			{
+				texture[motion.GetMotionNo() - 1].Render({ Xpos,Ypos - motionOffset[motion.GetMotionNo()][1] }, rect, *_camera);
+			}
+		}
+
+		rect = motion.GetSourceRectangle();
+		rect.SetBounds({ Xpos,Ypos }, rect.GetSize());
+		::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kGreen, *_camera);
+
+		rect = GetRect();
+
+		//“–‚½‚è”»’è@–³“G‚¾‚Æ”’
+		if (invicibleWait > 0) ::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kWhite, *_camera);
+		else ::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kRed, *_camera);
+
+		::GraphicsUtilities::RenderLineRectangle(GetSerchRect(), color::rgba::kBlue, *_camera);
+
+		if (motion.GetMotionNo() == emAttack)
+		{
+			::GraphicsUtilities::RenderLineRectangle(GetAttackRect(), color::rgba::kRed, *_camera);
+		}
 	}
-
-	rect = motion.GetSourceRectangle();
-	rect.SetBounds({ Xpos,Ypos }, rect.GetSize());
-	::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kGreen, *_camera);
-
-	//::GraphicsUtilities::RenderLineRectangle(CRectangle(Xpos, Ypos, Xpos + width, Ypos + height), color::rgba::kGreen, *_camera);
-	::GraphicsUtilities::RenderLineRectangle(CRectangle((Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) - searchRange, Ypos, (Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) + searchRange, Ypos + height), color::rgba::kBlue, *_camera);
 }
 
 void CSwordSoldier::RenderDebug(CCamera* _camera) 
@@ -153,9 +174,9 @@ void CSwordSoldier::Move()
 	Xpos += Xspd;
 	Ypos += Yspd;
 
-	if (Ypos + height >= 700)
+	if (Ypos + GetRect().GetHeight() > 700)
 	{
-		Ypos = 700 - height;
+		Ypos = 700 - GetRect().GetHeight();
 		Yspd = 0;
 	}
 }
@@ -168,13 +189,13 @@ void CSwordSoldier::Attack()
 
 void CSwordSoldier::SearchAllies(CRectangle girl, CRectangle wolf)
 {
-	if (std::abs((girl.left + (girl.GetWidth() * 0.5f)) - (Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f))) < std::abs((wolf.left + (wolf.GetWidth() * 0.5f)) - (Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f))))
+	if (std::abs((girl.left + (girl.GetWidth() * 0.5f)) - (GetRect().left + (GetRect().GetWidth() * 0.5f))) < std::abs((wolf.left + (wolf.GetWidth() * 0.5f)) - (GetRect().left + (GetRect().GetWidth() * 0.5f))))
 	{
-		if (girl.CollisionRectangle(CRectangle((Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) - searchRange, Ypos, (Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) + searchRange, Ypos + height)))
+		if (girl.CollisionRectangle(GetSerchRect()))
 		{
-			(Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f) > girl.left + (girl.GetWidth() * 0.5f)) ? isRight = false : isRight = true;
+			(GetRect().left + (GetRect().GetWidth() * 0.5f) > girl.left + (girl.GetWidth() * 0.5f)) ? isRight = false : isRight = true;
 
-			if (girl.CollisionRectangle(CRectangle((Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) - 125, Ypos, (Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) + 125, Ypos + height)))
+			if (girl.CollisionRectangle(GetAttackSerchRect()))
 			{
 				isMove = false;
 				isAttack = true;
@@ -189,11 +210,11 @@ void CSwordSoldier::SearchAllies(CRectangle girl, CRectangle wolf)
 	}
 	else 
 	{
-		if (wolf.CollisionRectangle(CRectangle((Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) - searchRange, Ypos, (Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) + searchRange, Ypos + height)))
+		if (wolf.CollisionRectangle(GetSerchRect()))
 		{
-			(Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f) > wolf.left + (wolf.GetWidth() * 0.5f)) ? isRight = false : isRight = true;
+			(GetRect().left + (GetRect().GetWidth() * 0.5f) > wolf.left + (wolf.GetWidth() * 0.5f)) ? isRight = false : isRight = true;
 
-			if (wolf.CollisionRectangle(CRectangle((Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) - 125, Ypos, (Xpos + (motion.GetSourceRectangle().GetWidth() * 0.5f)) + 125, Ypos + height)))
+			if (wolf.CollisionRectangle(GetAttackSerchRect()))
 			{
 				isMove = false;
 				isAttack = true;
@@ -206,4 +227,62 @@ void CSwordSoldier::SearchAllies(CRectangle girl, CRectangle wolf)
 			isAttack = false;
 		}
 	}
+}
+
+bool CSwordSoldier::TakeDamage() {
+	health--;
+
+	if (health > 0) 
+	{
+		invicibleWait = invicibleTime;
+
+		return true;
+	}
+	
+	motion.ChangeMotion(emDown);
+	return false;
+}
+
+CRectangle CSwordSoldier::GetRect() 
+{
+	CRectangle rect = motion.GetSourceRectangle();
+	rect.SetBounds({ Xpos,Ypos - motionOffset[motion.GetMotionNo()][1] }, rect.GetSize());
+
+	rect.top += motionOffset[motion.GetMotionNo()][1];
+	rect.bottom += motionOffset[motion.GetMotionNo()][3];
+
+	if (!isRight)
+	{
+		rect.left -= motionOffset[motion.GetMotionNo()][2];
+		rect.right -= motionOffset[motion.GetMotionNo()][0];
+	}
+	else
+	{
+		rect.left += motionOffset[motion.GetMotionNo()][0];
+		rect.right += motionOffset[motion.GetMotionNo()][2];
+	}
+
+	return rect;
+}
+
+CRectangle CSwordSoldier::GetAttackRect() 
+{
+	if (isRight) 
+	{
+		return CRectangle((GetRect().left + GetRect().GetWidth() * 0.5f) + 15, GetRect().top - 20, (GetRect().left + GetRect().GetWidth() * 0.5f) + 130, GetRect().top + GetRect().GetHeight() - 10);
+	}
+	else 
+	{
+		return CRectangle((GetRect().left + GetRect().GetWidth() * 0.5f) - 130, GetRect().top - 20, (GetRect().left + GetRect().GetWidth() * 0.5f) - 20, GetRect().top + GetRect().GetHeight() - 10);
+	}
+}
+
+CRectangle CSwordSoldier::GetSerchRect() 
+{
+	return CRectangle((GetRect().left + GetRect().GetWidth() * 0.5f) - searchRange, GetRect().top, (GetRect().left + GetRect().GetWidth() * 0.5f) + searchRange, GetRect().bottom);
+}
+
+CRectangle CSwordSoldier::GetAttackSerchRect() 
+{
+	return CRectangle((GetRect().left + (GetRect().GetWidth() * 0.5f)) - attackSerchRange, GetRect().top, (GetRect().left + (GetRect().GetWidth() * 0.5f)) + attackSerchRange, GetRect().top + GetRect().GetHeight());
 }

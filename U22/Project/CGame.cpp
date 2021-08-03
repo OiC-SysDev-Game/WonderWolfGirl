@@ -37,6 +37,14 @@ void CGame::Update() {
 	girl.Update();
 	swordSoldier.Update(girl.GetRect(),wolf.GetRect());
 
+	if (swordSoldier.GetShow() && swordSoldier.GetAttack())
+	{
+		if (girl.GetRect().CollisionRectangle(swordSoldier.GetAttackRect())) 
+		{
+			girl.TakeDamage(1);
+		}
+	}
+
 	/*
 	//（仮）Nキーでタイトルシーンへ移行
 	if (g_pInput->IsPush(u22::input::KeyCode::N))

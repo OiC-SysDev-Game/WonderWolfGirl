@@ -22,6 +22,7 @@ protected:
 	float gravity;
 
 	bool isRight;
+	bool isShow;
 
 	float Xpos;
 	float Ypos;
@@ -39,9 +40,10 @@ public:
 	virtual void RenderDebug(CCamera* _camera);
 	virtual void Release() = 0;
 
-	bool TakeDamage();		//被ダメージ処理 体力が0以下になるとfalseが戻る	第2引数で割合処理
+	virtual bool TakeDamage() = 0;		//被ダメージ処理 体力が0以下になるとfalseが戻る	第2引数で割合処理
 
 	bool GetDirection(void) { return isRight; }
+	bool GetShow(void) { return isShow; }
 	float GetXPos(void) { return Xpos; }
 	float GetYPos(void) { return Ypos; }
 };

@@ -8,7 +8,31 @@ CWolf::~CWolf()
 	Release();
 };
 
-bool CWolf::Load() {
+bool CWolf::Load() 
+{
+	//幅、高さ、コマ数
+	texture[0].Load("Character/Wolf/Wolf_Walk_400_278_30.png");
+
+	SpriteAnimationCreate anim[] = 
+	{
+		{
+		"Wait",
+		0,0,
+		400,278,
+		TRUE,{{2,0,0}}
+		},
+		{
+		"Walk",
+		0,0,
+		400,278,
+		TRUE,{{2,0,0},{2,1,0},{2,2,0},{2,3,0},{2,4,0},{2,0,1},{2,1,1},{2,2,1},{2,3,1},{2,4,1},{2,0,2},{2,1,2},{2,2,2},{2,3,2},{2,4,2},{2,0,3},{2,1,3},{2,2,3},{2,3,3},{2,4,3},{2,0,4},{2,1,4},{2,2,4},{2,3,4},{2,4,4},{2,0,5},{2,1,5},{2,2,5},{2,3,5},{2,4,5}}
+		},
+	};
+
+	//本来はemEnd
+	motion.Create(anim, 2);
+	motion.ChangeMotion(0);
+	
 	return true;
 }
 
@@ -42,23 +66,29 @@ void CWolf::Update()
 	if (g_pInput->IsPush(u22::input::MouseButton::Left)) Attack();
 	if (g_pInput->IsPush(u22::input::MouseButton::Right)) Howling();
 	if (g_pInput->IsPush(u22::input::KeyCode::W)) Carry();
+
+	motion.AddTimer(g_pClock->GetFrameSecond());
 }
 
 void CWolf::Render(CCamera* _camera) 
 {
-	::GraphicsUtilities::RenderLineRectangle(GetRect(), color::rgba::kRed, *_camera);
-	if (isRight)
-	{
-		::GraphicsUtilities::RenderLineRectangle(
-			CRectangle(Xpos + 270, Ypos + 35, Xpos + 290, Ypos + 70),
-			color::rgba::kRed, *_camera);
+	CRectangle rect = motion.GetSourceRectangle();
+
+	if (!isRight) {
+		float tmp = rect.right;
+		rect.right = rect.left;
+		rect.left = tmp;
+	}
+
+	if (motion.GetMotionNo() == 0) {
+		texture[0].Render({ Xpos,Ypos }, rect, *_camera);
 	}
 	else
 	{
-		::GraphicsUtilities::RenderLineRectangle(
-			CRectangle(Xpos + 30, Ypos + 35, Xpos + 50, Ypos + 70),
-			color::rgba::kRed, *_camera);
+		texture[motion.GetMotionNo() - 1].Render({ Xpos,Ypos }, rect, *_camera);
 	}
+
+	::GraphicsUtilities::RenderLineRectangle(GetRect(), color::rgba::kGreen, *_camera);
 }
 
 void CWolf::RenderDebug(CCamera* _camera) 
@@ -97,6 +127,9 @@ void CWolf::Acceleration(bool isRight)
 		Xspd -= accelerateSpd;
 		if (Xspd < -maxSpd) Xspd = -maxSpd;
 	}
+
+	if (motion.GetMotionNo() == emWait)
+		motion.ChangeMotion(emWalk);
 }
 
 void CWolf::Jump(void)
@@ -120,6 +153,9 @@ void CWolf::Neutral(void)
 		Xspd += decelerateSpd;
 		if (Xspd >= 0) Xspd = 0;
 	}
+
+	if (Xspd == 0 && motion.GetMotionNo() == emWalk)
+		motion.ChangeMotion(emWait);
 }
 
 void CWolf::Move(void)
@@ -130,9 +166,9 @@ void CWolf::Move(void)
 	Ypos += Yspd;
 
 	//着地処理
-	if (Ypos + height > 700)
+	if (GetRect().bottom > 700)
 	{
-		Ypos = 700 - height;
+		Ypos = 700 - GetRect().GetHeight();
 		Yspd = 0;
 		canJump = true;
 
@@ -175,8 +211,8 @@ void CWolf::Carry(void)
 {
 	if (!isCarry)
 	{
-		if (CRectangle(Xpos, Ypos, Xpos + width, Ypos + height).CollisionRectangle
-		(CRectangle(girl->GetRect())) && canJump)
+		if (GetRect().CollisionRectangle
+		(CRectangle(girl->GetRect())) && girl->GetHealth() > 0 && canJump)
 		{
 			//少女を同期
 			isCarry = true;
@@ -193,4 +229,11 @@ void CWolf::Carry(void)
 			girl->SetCarry(false);
 		}
 	}
+}
+
+CRectangle CWolf::GetRect(void) 
+{
+	CRectangle rect = motion.GetSourceRectangle();
+	rect.SetBounds({ Xpos,Ypos }, motion.GetSourceRectangle().GetSize());
+	return rect;
 }

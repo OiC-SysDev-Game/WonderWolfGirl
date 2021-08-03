@@ -15,7 +15,7 @@ private:
 	float maxSpd = 2.7;
 	float gravity = 0.45;
 
-	float invicibleTime = 1;
+	float invicibleTime = 2;
 	float invicibleWait = 0;
 
 	//å„Ç≈çÌèú
@@ -50,6 +50,9 @@ private:
 		emEnd
 	};
 
+	//motionIDÇ…ëŒâûÇ∑ÇÈìñÇΩÇËîªíË
+	float motionOffset[6][4] = { {15,15,-5,0},{25,5,-35,-8},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0} };
+
 public:
 	CGirl();
 	~CGirl();
@@ -64,9 +67,9 @@ public:
 	bool GetCarry(void) { return isRide; }
 	void SetCarry(bool arg) { isRide = arg; }
 	bool GetDirection(void) { return isRight; }
-	void SetDirection(bool arg) { isRight = arg; }
+	void SetDirection(bool arg) { if (motion.GetMotionNo() != emDown) isRight = arg; }
 	bool GetMove(void) { return isMove; }
-	void SetMove(bool arg) { isMove = arg; }
+	void SetMove(bool arg) { if (motion.GetMotionNo() != emDown) isMove = arg; }
 
 	CRectangle GetRect(void);
 

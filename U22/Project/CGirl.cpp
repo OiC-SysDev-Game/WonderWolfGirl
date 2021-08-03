@@ -9,10 +9,10 @@ CGirl::~CGirl()
 bool CGirl::Load() 
 {
 	//幅、高さ、コマ数
-	texture[0].Load("Character/Girl/wait_91_246_30.png");
-	texture[1].Load("Character/Girl/walk_136_246_25.png");
-	texture[2].Load("Character/Girl/hit_106_246_10.png");
-	texture[3].Load("Character/Girl/down_260_240_30.png");
+	texture[0].Load("Character/Girl/Girl_Wait_91_246_30.png");
+	texture[1].Load("Character/Girl/Girl_Walk_136_246_25.png");
+	texture[2].Load("Character/Girl/Girl_Hit_106_246_10.png");
+	texture[3].Load("Character/Girl/Girl_Down_260_240_30.png");
 
 	SpriteAnimationCreate anim[] =
 	{
@@ -68,12 +68,19 @@ void CGirl::Initialize(CWolf* arg)
 
 void CGirl::Update() 
 {
-	if (isMove) Acceleration();
+	if (isMove && motion.GetMotionNo() != emDown) Acceleration();
 	else Neutral();
 
 	Move();
 
 	motion.AddTimer(g_pClock->GetFrameSecond());
+
+	if (motion.GetMotionNo() == emHit && motion.IsEndMotion()) 
+	{
+		motion.ChangeMotion(emWait);
+	}
+
+	if (invicibleWait > 0) invicibleWait -= g_pClock->GetFrameSecond();
 }
 
 void CGirl::Render(CCamera* _camera) 
@@ -86,11 +93,21 @@ void CGirl::Render(CCamera* _camera)
 		rect.left = tmp;
 	}
 
-	texture[motion.GetMotionNo()].Render({ Xpos,Ypos }, rect, *_camera);
+	if ((int)(invicibleWait * 10) % 2 == 0) 
+	{
+		texture[motion.GetMotionNo()].Render({ Xpos,Ypos - motionOffset[motion.GetMotionNo()][1] }, rect, *_camera);
+	}
 
+	//画像の大きさ
 	rect = motion.GetSourceRectangle();
-	rect.SetBounds({ Xpos,Ypos }, rect.GetSize());
-	::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kRed, *_camera);
+	rect.SetBounds({ Xpos,Ypos - motionOffset[motion.GetMotionNo()][1] }, rect.GetSize());
+	::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kGreen, *_camera);
+
+	rect = GetRect();
+
+	//当たり判定　無敵だと白
+	if (invicibleWait > 0) ::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kWhite, *_camera);
+	else ::GraphicsUtilities::RenderLineRectangle(rect, color::rgba::kRed, *_camera);
 
 }
 
@@ -109,23 +126,33 @@ void CGirl::Release()
 
 bool CGirl::TakeDamage(int damage)
 {
-	health -= damage;
-
-	if (health < 0) 
+	if (invicibleWait <= 0 && motion.GetMotionNo() != emDown) 
 	{
-		motion.ChangeMotion(emDown);
+		health -= damage;
 
-		return true;
-	}
-	else 
-	{
-		motion.ChangeMotion(emHit);
-		return false;
+		(isRight) ? Xspd = -5 : Xspd = 5;
+
+		if (health <= 0) 
+		{
+			Xpos -= 100;
+
+			motion.ChangeMotion(emDown);
+			return true;
+		}
+		else 
+		{
+			invicibleWait = invicibleTime;
+
+			motion.ChangeMotion(emHit);
+			return false;
+		}
 	}
 }
 
 void CGirl::Acceleration(void)
 {
+	if (motion.GetMotionNo() == emDown || motion.GetMotionNo() == emHit) return;
+
 	if (isRight)
 	{
 		Xspd += accelerateSpd;
@@ -137,8 +164,14 @@ void CGirl::Acceleration(void)
 		if (Xspd < -maxSpd) Xspd = -maxSpd;
 	}
 
-	if (motion.GetMotionNo() == emWait)
+	if (motion.GetMotionNo() == emWait) 
+	{
 		motion.ChangeMotion(emWalk);
+		if (!isRight) 
+		{
+			Xpos -= 25;
+		}
+	}
 }
 
 void CGirl::Neutral(void)
@@ -160,8 +193,12 @@ void CGirl::Neutral(void)
 		}
 	}
 
-	if (Xspd == 0 && motion.GetMotionNo() == emWalk)
+	if (Xspd == 0 && motion.GetMotionNo() == emWalk) 
+	{
 		motion.ChangeMotion(emWait);
+		if (!isRight) Xpos += 35;
+		else Xpos += 15;
+	}
 }
 
 void CGirl::Move(void)
@@ -169,11 +206,10 @@ void CGirl::Move(void)
 	if (isRide)
 	{
 		//狼と同期
-		float a = wolf->GetRect().left;
-		float b = wolf->GetRect().top;
+		CRectangle rect = wolf->GetRect();
 
-		Xpos = a + 60;
-		Ypos = b - 75;
+		Xpos = rect.left + (rect.GetWidth() * 0.5f) - (motion.GetSourceRectangle().GetWidth() * 0.5f);
+		Ypos = rect.top - 25;
 		isRight = wolf->GetDirection();
 	}
 	else
@@ -183,9 +219,9 @@ void CGirl::Move(void)
 		Xpos += Xspd;
 		Ypos += Yspd;
 
-		if (Ypos + motion.GetSourceRectangle().GetHeight() > 700) //height >= 700) 
+		if (Ypos + GetRect().GetHeight() > 700) //height >= 700) 
 		{
-			Ypos = 700 - motion.GetSourceRectangle().GetHeight(); //height;
+			Ypos = 700 - GetRect().GetHeight(); //height;
 			Yspd = 0;
 		}
 	}
@@ -194,6 +230,21 @@ void CGirl::Move(void)
 CRectangle CGirl::GetRect(void)
 {
 	CRectangle rect = motion.GetSourceRectangle();
-	rect.SetBounds({ Xpos,Ypos }, motion.GetSourceRectangle().GetSize());
+	rect.SetBounds({ Xpos,Ypos - motionOffset[motion.GetMotionNo()][1] }, rect.GetSize());
+	
+	rect.top += motionOffset[motion.GetMotionNo()][1];
+	rect.bottom += motionOffset[motion.GetMotionNo()][3];
+
+	if (!isRight) 
+	{
+		rect.left -= motionOffset[motion.GetMotionNo()][2];
+		rect.right -= motionOffset[motion.GetMotionNo()][0];
+	}
+	else 
+	{
+		rect.left += motionOffset[motion.GetMotionNo()][0];
+		rect.right += motionOffset[motion.GetMotionNo()][2];
+	}
+
 	return rect;
 }
