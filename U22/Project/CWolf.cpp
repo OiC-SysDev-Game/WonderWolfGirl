@@ -48,6 +48,9 @@ void CWolf::Initialize(CGirl* arg)
 	Xspd = 0;
 	Yspd = 0;
 
+	XbackPos = 0;
+	YbackPos = 0;
+
 	girl = arg;
 
 	Load();
@@ -55,6 +58,9 @@ void CWolf::Initialize(CGirl* arg)
 
 void CWolf::Update() 
 {
+	XbackPos = Xpos;
+	YbackPos = Ypos;
+
 	if (g_pInput->IsHold(u22::input::KeyCode::D)) Acceleration(true);
 	else if (g_pInput->IsHold(u22::input::KeyCode::A)) Acceleration(false);
 	else Neutral();
@@ -132,7 +138,7 @@ void CWolf::Acceleration(bool isRight)
 		motion.ChangeMotion(emWalk);
 }
 
-void CWolf::Jump(void)
+void CWolf::Jump()
 {
 	if (canJump)
 	{
@@ -141,7 +147,7 @@ void CWolf::Jump(void)
 	}
 }
 
-void CWolf::Neutral(void)
+void CWolf::Neutral()
 {
 	if (Xspd > 0)
 	{
@@ -158,14 +164,15 @@ void CWolf::Neutral(void)
 		motion.ChangeMotion(emWait);
 }
 
-void CWolf::Move(void)
+void CWolf::Move()
 {
 	Yspd += gravity;
 
 	Xpos += Xspd;
 	Ypos += Yspd;
 
-	//’…’nˆ—
+	//’…’nˆ—‚ÍCollisionObject‚ÉˆÚ“®
+	/*
 	if (GetRect().bottom > 700)
 	{
 		Ypos = 700 - GetRect().GetHeight();
@@ -181,9 +188,10 @@ void CWolf::Move(void)
 			isRight = false;
 		}
 	}
+	*/
 }
 
-void CWolf::Attack(void)
+void CWolf::Attack()
 {
 	if (!isCarry)
 	{
@@ -191,7 +199,7 @@ void CWolf::Attack(void)
 	}
 }
 
-void CWolf::Howling(void)
+void CWolf::Howling()
 {
 	if (!isCarry)
 	{
@@ -207,7 +215,7 @@ void CWolf::Howling(void)
 	}
 }
 
-void CWolf::Carry(void)
+void CWolf::Carry()
 {
 	if (!isCarry)
 	{
@@ -231,9 +239,33 @@ void CWolf::Carry(void)
 	}
 }
 
-CRectangle CWolf::GetRect(void) 
+CRectangle CWolf::GetRect() 
 {
 	CRectangle rect = motion.GetSourceRectangle();
 	rect.SetBounds({ Xpos,Ypos }, motion.GetSourceRectangle().GetSize());
 	return rect;
+}
+
+CRectangle CWolf::GetBackRect()
+{
+	CRectangle rect = motion.GetSourceRectangle();
+	rect.SetBounds({ XbackPos,YbackPos }, motion.GetSourceRectangle().GetSize());
+	return rect;
+}
+
+void CWolf::CollisionObject(float ox,float oy) 
+{
+	Xpos += ox;
+	Ypos += oy;
+
+	if (ox != 0)
+	{
+		Xspd = 0;
+	}
+
+	if (oy != 0)
+	{
+		Yspd = 0;
+		canJump = true;
+	}
 }

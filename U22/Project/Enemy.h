@@ -29,6 +29,9 @@ protected:
 	float Xspd;
 	float Yspd;
 
+	float XbackPos;
+	float YbackPos;
+
 	CTexture texture;
 	SpriteAnimationController motion;
 

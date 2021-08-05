@@ -18,11 +18,8 @@ private:
 	float invicibleTime = 2;
 	float invicibleWait = 0;
 
-	//Œã‚Åíœ
-	//float width = 35;
-	//float height = 70;
-	// 
 	//std::clamp(ŠÛ‚ß‚İ)
+
 	int health;		//‰Šú’l3
 
 	bool isRide;	//˜T‚Éæ‚Á‚Ä‚¢‚é‚©
@@ -33,6 +30,9 @@ private:
 	float Ypos;
 	float Xspd;
 	float Yspd;
+
+	float XbackPos;
+	float YbackPos;
 
 	CTexture texture[4];
 	SpriteAnimationController motion;
@@ -63,20 +63,23 @@ public:
 	void RenderDebug(CCamera* _camera);
 	void Release();
 
-	int GetHealth(void) { return health; }
-	bool GetCarry(void) { return isRide; }
+	int GetHealth() { return health; }
+	bool GetCarry() { return isRide; }
 	void SetCarry(bool arg) { isRide = arg; }
-	bool GetDirection(void) { return isRight; }
+	bool GetDirection() { return isRight; }
 	void SetDirection(bool arg) { if (motion.GetMotionNo() != emDown) isRight = arg; }
-	bool GetMove(void) { return isMove; }
+	bool GetMove() { return isMove; }
 	void SetMove(bool arg) { if (motion.GetMotionNo() != emDown) isMove = arg; }
 
-	CRectangle GetRect(void);
+	CRectangle GetRect();
+	CRectangle GetBackRect();
 
 	bool TakeDamage(int damage);		//”íƒ_ƒ[ƒWˆ— ‘Ì—Í‚ª0ˆÈ‰º‚É‚È‚é‚Æfalse‚ª–ß‚é	‘æ2ˆø”‚ÅŠ„‡ˆ—
 
-	void Acceleration(void);	//ˆÚ“®ó‘Ô
-	void Neutral(void);			//’â~ó‘Ô
-	void Move(void);			//ˆÚ“®ˆ—
+	void Acceleration();	//ˆÚ“®ó‘Ô
+	void Neutral();			//’â~ó‘Ô
+	void Move();			//ˆÚ“®ˆ—
+
+	void CollisionObject(float ox, float oy);
 };
 

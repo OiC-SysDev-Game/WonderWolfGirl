@@ -16,10 +16,6 @@ private:
 	float jumpSpd = 18;
 	float gravity = 0.45;
 
-	/*後で削除
-	int width = 320;
-	int height = 180;*/
-
 	int health;		//初期値100
 
 	bool isCarry;	//少女を乗せているか
@@ -30,6 +26,10 @@ private:
 	float Ypos;
 	float Xspd;
 	float Yspd;
+
+	//stage側処理
+	float XbackPos;
+	float YbackPos;
 
 	CGirl* girl;
 
@@ -57,20 +57,23 @@ public:
 	void RenderDebug(CCamera* _camera);
 	void Release();
 
-	int GetHealth(void) { return health; }
-	bool GetCarry(void) { return isCarry; }
-	bool GetDirection(void) { return isRight; }
-	CRectangle GetRect(void);
+	int GetHealth() { return health; }
+	bool GetCarry() { return isCarry; }
+	bool GetDirection() { return isRight; }
+	CRectangle GetRect();
+	CRectangle GetBackRect();
 
 	bool TakeDamage(int damage, bool isRatio);		//被ダメージ処理 体力が0以下になるとfalseが戻る	第2引数で割合処理
 
 	void Acceleration(bool isRight);				//左右入力
-	void Jump(void);								//ジャンプ入力
-	void Neutral(void);								//入力無し
-	void Move(void);								//移動処理
+	void Jump();								//ジャンプ入力
+	void Neutral();								//入力無し
+	void Move();								//移動処理
 
-	void Attack(void);
-	void Howling(void);
-	void Carry(void);
+	void Attack();
+	void Howling();
+	void Carry();
+
+	void CollisionObject(float ox,float oy);
 };
 

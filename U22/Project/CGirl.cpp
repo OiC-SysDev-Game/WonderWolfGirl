@@ -61,6 +61,9 @@ void CGirl::Initialize(CWolf* arg)
 	Xspd = 0;
 	Yspd = 0;
 
+	XbackPos = 0;
+	YbackPos = 0;
+
 	wolf = arg;
 
 	Load();
@@ -68,6 +71,9 @@ void CGirl::Initialize(CWolf* arg)
 
 void CGirl::Update() 
 {
+	XbackPos = Xpos;
+	YbackPos = Ypos;
+
 	if (isMove && motion.GetMotionNo() != emDown) Acceleration();
 	else Neutral();
 
@@ -219,11 +225,14 @@ void CGirl::Move(void)
 		Xpos += Xspd;
 		Ypos += Yspd;
 
+		//’…’n”»’è‚ÍCollisionObject‚ÉˆÚ“®
+		/*
 		if (Ypos + GetRect().GetHeight() > 700) //height >= 700) 
 		{
 			Ypos = 700 - GetRect().GetHeight(); //height;
 			Yspd = 0;
 		}
+		*/
 	}
 }
 
@@ -247,4 +256,49 @@ CRectangle CGirl::GetRect(void)
 	}
 
 	return rect;
+}
+
+CRectangle CGirl::GetBackRect(void)
+{
+	CRectangle rect = motion.GetSourceRectangle();
+	rect.SetBounds({ XbackPos,YbackPos - motionOffset[motion.GetMotionNo()][1] }, rect.GetSize());
+
+	rect.top += motionOffset[motion.GetMotionNo()][1];
+	rect.bottom += motionOffset[motion.GetMotionNo()][3];
+
+	if (!isRight)
+	{
+		rect.left -= motionOffset[motion.GetMotionNo()][2];
+		rect.right -= motionOffset[motion.GetMotionNo()][0];
+	}
+	else
+	{
+		rect.left += motionOffset[motion.GetMotionNo()][0];
+		rect.right += motionOffset[motion.GetMotionNo()][2];
+	}
+
+	return rect;
+}
+
+void CGirl::CollisionObject(float ox, float oy) 
+{
+	Xpos += ox;
+	Ypos += oy;
+
+	if (ox != 0)
+	{
+		Xspd = 0;
+
+		if (motion.GetMotionNo() == emWalk)
+		{
+			motion.ChangeMotion(emWait);
+			if (!isRight) Xpos += 35;
+			else Xpos += 15;
+		}
+	}
+
+	if (oy != 0)
+	{
+		Yspd = 0;
+	}
 }

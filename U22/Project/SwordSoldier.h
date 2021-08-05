@@ -8,9 +8,6 @@ private:
 	bool isMove = false;
 	bool isAttack = false;
 
-	float height = 240;
-	float width = 130;
-
 	float searchRange = 300;
 	float attackSerchRange = 150;
 	float invicibleTime = 1;
@@ -51,4 +48,7 @@ public:
 	CRectangle GetAttackRect();
 	CRectangle GetSerchRect();
 	CRectangle GetAttackSerchRect();
+	CRectangle GetBackRect();
+
+	void CollisionObject(float ox, float oy);
 };
